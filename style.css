@@ -1,85 +1,93 @@
-@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --jungle-deep: #14211a;
-  --jungle-mid: #1f3328;
-  --moss: #3f5d3a;
-  --clay: #d98e3f;
-  --leaf: #7fae5c;
-  --paper: #ede6d6;
-  --paper-dim: #b9b3a3;
+  --bg-dark: #0c0c0e;
+  --neon-green: #39ff6a;
+  --neon-green-dim: #1f8c43;
+  --panel: #111113;
+  --paper: #f2f2f2;
+  --paper-dim: #9a9a9a;
 }
 
 * { box-sizing: border-box; }
 
+html, body {
+  height: 100%;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background:
-    radial-gradient(ellipse at 20% 0%, rgba(127,174,92,0.12), transparent 55%),
-    radial-gradient(ellipse at 85% 30%, rgba(217,142,63,0.08), transparent 50%),
-    var(--jungle-deep);
+    radial-gradient(circle at 15% 20%, rgba(255,60,180,0.18), transparent 35%),
+    radial-gradient(circle at 80% 15%, rgba(60,255,140,0.16), transparent 40%),
+    radial-gradient(circle at 60% 80%, rgba(60,140,255,0.14), transparent 40%),
+    repeating-linear-gradient(0deg, #161616 0px, #161616 18px, #131313 18px, #131313 36px),
+    var(--bg-dark);
   color: var(--paper);
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
   text-align: center;
-  padding: 56px 20px 28px;
+  padding: 56px 20px 12px;
 }
 
 header h1 {
-  font-family: 'Fjalla One', sans-serif;
-  font-size: 3rem;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 800;
   margin: 0;
-  letter-spacing: 3px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--paper);
-  text-shadow: 0 0 24px rgba(127,174,92,0.35);
+  background: linear-gradient(90deg, #ff5f9e, #ffd23f, #39ff6a, #3fd4ff, #b673ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 18px rgba(57,255,106,0.25));
 }
 
 .tagline {
-  color: var(--leaf);
-  margin-top: 8px;
+  color: var(--paper-dim);
+  margin-top: 6px;
   font-size: 0.95rem;
   letter-spacing: 0.5px;
 }
 
 #auth-section {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
+  align-content: center;
   justify-content: center;
   gap: 24px;
   padding: 20px;
   max-width: 700px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .auth-box {
-  background: linear-gradient(165deg, var(--jungle-mid), var(--jungle-deep));
+  background: var(--panel);
   padding: 28px;
-  border-radius: 4px;
+  border-radius: 6px;
   width: 280px;
-  border: 1px solid var(--moss);
+  border: 2px solid var(--neon-green);
+  box-shadow: 0 0 16px rgba(57,255,106,0.12);
   position: relative;
 }
 
-.auth-box::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 36px; height: 3px;
-  background: var(--clay);
-}
-
 .auth-box h2 {
-  margin-top: 4px;
-  font-family: 'Fjalla One', sans-serif;
+  margin-top: 0;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
   font-size: 1.2rem;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--paper);
+  color: var(--neon-green);
 }
 
 .auth-box form {
@@ -91,48 +99,42 @@ header h1 {
 .auth-box input {
   padding: 11px 12px;
   border-radius: 3px;
-  border: 1px solid var(--moss);
-  background: var(--jungle-deep);
+  border: 1.5px solid #2a2a2a;
+  background: #0c0c0e;
   color: var(--paper);
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .auth-box input::placeholder {
   color: var(--paper-dim);
 }
 
-/* Signature interaction: fields "blend" into a different camouflage tone on focus */
 .auth-box input:focus {
   outline: none;
-  border-color: var(--leaf);
-  background: #1a2920;
-  box-shadow: 0 0 0 3px rgba(127,174,92,0.18);
-}
-
-.auth-box:focus-within::before {
-  background: var(--leaf);
-  width: 56px;
-  transition: width 0.4s ease, background 0.4s ease;
+  border-color: var(--neon-green);
+  box-shadow: 0 0 0 3px rgba(57,255,106,0.15);
 }
 
 .auth-box button {
-  padding: 11px;
-  border: none;
+  padding: 12px;
+  border: 2px solid var(--neon-green);
   border-radius: 3px;
-  background: var(--clay);
-  color: var(--jungle-deep);
-  font-family: 'Fjalla One', sans-serif;
+  background: #0c0c0e;
+  color: var(--neon-green);
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
 }
 
 .auth-box button:hover {
-  background: var(--leaf);
+  background: var(--neon-green);
+  color: #0c0c0e;
 }
 
 .auth-box button:active {
@@ -141,7 +143,7 @@ header h1 {
 
 #auth-status {
   text-align: center;
-  color: var(--clay);
+  color: #ffd23f;
   width: 100%;
   font-size: 0.9rem;
 }
@@ -151,17 +153,16 @@ header h1 {
   justify-content: space-between;
   align-items: center;
   padding: 18px 28px;
-  background: var(--jungle-mid);
-  border-bottom: 1px solid var(--moss);
+  background: var(--panel);
+  border-bottom: 2px solid var(--neon-green);
 }
 
 #logout-btn {
   padding: 9px 16px;
-  border: none;
   border-radius: 3px;
   background: transparent;
-  border: 1px solid var(--clay);
-  color: var(--clay);
+  border: 2px solid #ff5f9e;
+  color: #ff5f9e;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   cursor: pointer;
@@ -169,6 +170,6 @@ header h1 {
 }
 
 #logout-btn:hover {
-  background: var(--clay);
-  color: var(--jungle-deep);
+  background: #ff5f9e;
+  color: #0c0c0e;
 }
