@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meccha Hide</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -41,12 +43,38 @@
     <button id="logout-btn">Log Out</button>
   </div>
 
-  <p style="text-align:center; color:#888; margin-top:40px;">
-    Map and hide-posting coming in the next step.
-  </p>
+  <div class="app-layout">
+    <div id="map"></div>
+
+    <div class="side-panel">
+      <h3>Post a Hide</h3>
+      <p class="hint">Click a spot on the map, then fill this out.</p>
+      <form id="post-form">
+        <input type="text" id="hide-name" placeholder="Name (e.g. Blue Chameleon)" required>
+        <textarea id="hide-clue" placeholder="Clue / description" rows="3" required></textarea>
+        <input type="file" id="hide-photo" accept="image/*" required>
+        <input type="hidden" id="hide-lat">
+        <input type="hidden" id="hide-lng">
+        <button type="submit" id="post-btn">Drop Pin to Set Location</button>
+      </form>
+      <p id="post-status"></p>
+
+      <div id="selected-hide" style="display:none;">
+        <hr>
+        <h3 id="selected-name"></h3>
+        <p id="selected-clue"></p>
+        <img id="selected-photo" alt="hide photo">
+        <p id="selected-finds"></p>
+        <input type="file" id="confirm-photo" accept="image/*">
+        <button id="confirm-btn">I Found It! Upload Proof</button>
+        <p id="confirm-status"></p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <script type="module" src="firebase-config.js"></script>
 <script type="module" src="auth.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
