@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --jungle-deep: #14211a;
+  --jungle-mid: #1f3328;
+  --moss: #3f5d3a;
+  --clay: #d98e3f;
+  --leaf: #7fae5c;
+  --paper: #ede6d6;
+  --paper-dim: #b9b3a3;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(127,174,92,0.12), transparent 55%),
+    radial-gradient(ellipse at 85% 30%, rgba(217,142,63,0.08), transparent 50%),
+    var(--jungle-deep);
+  color: var(--paper);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 56px 20px 28px;
+}
+
+header h1 {
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 3rem;
+  margin: 0;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--paper);
+  text-shadow: 0 0 24px rgba(127,174,92,0.35);
+}
+
+.tagline {
+  color: var(--leaf);
+  margin-top: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+#auth-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding: 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.auth-box {
+  background: linear-gradient(165deg, var(--jungle-mid), var(--jungle-deep));
+  padding: 28px;
+  border-radius: 4px;
+  width: 280px;
+  border: 1px solid var(--moss);
+  position: relative;
+}
+
+.auth-box::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 36px; height: 3px;
+  background: var(--clay);
+}
+
+.auth-box h2 {
+  margin-top: 4px;
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.auth-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-box input {
+  padding: 11px 12px;
+  border-radius: 3px;
+  border: 1px solid var(--moss);
+  background: var(--jungle-deep);
+  color: var(--paper);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+}
+
+.auth-box input::placeholder {
+  color: var(--paper-dim);
+}
+
+/* Signature interaction: fields "blend" into a different camouflage tone on focus */
+.auth-box input:focus {
+  outline: none;
+  border-color: var(--leaf);
+  background: #1a2920;
+  box-shadow: 0 0 0 3px rgba(127,174,92,0.18);
+}
+
+.auth-box:focus-within::before {
+  background: var(--leaf);
+  width: 56px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.auth-box button {
+  padding: 11px;
+  border: none;
+  border-radius: 3px;
+  background: var(--clay);
+  color: var(--jungle-deep);
+  font-family: 'Fjalla One', sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.auth-box button:hover {
+  background: var(--leaf);
+}
+
+.auth-box button:active {
+  transform: scale(0.98);
+}
+
+#auth-status {
+  text-align: center;
+  color: var(--clay);
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 28px;
+  background: var(--jungle-mid);
+  border-bottom: 1px solid var(--moss);
+}
+
+#logout-btn {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  border: 1px solid var(--clay);
+  color: var(--clay);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+#logout-btn:hover {
+  background: var(--clay);
+  color: var(--jungle-deep);
+}
