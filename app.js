@@ -116,20 +116,30 @@ if (postForm) {
 
     try {
       const photoRef = ref(storage, `hides/${Date.now()}_${photoFile.name}`);
-      await uploadBytes(photoRef, photoFile);
-      const photoUrl = await getDownloadURL(photoRef);
 
-      await addDoc(collection(db, "hides"), {
-        name,
-        clue,
-        lat,
-        lng,
-        photoUrl,
-        creatorId: auth.currentUser.uid,
-        creatorEmail: auth.currentUser.email,
-        finds: [],
-        createdAt: serverTimestamp()
-      });
+      const timeout = (ms) => new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Timed out after " + (ms/1000) + "s")), ms)
+      );
+
+      await Promise.race([uploadBytes(photoRef, photoFile), timeout(15000)]);
+      status.textContent = "Photo uploaded, saving hide details...";
+
+      const photoUrl = await Promise.race([getDownloadURL(photoRef), timeout(15000)]);
+
+      await Promise.race([
+        addDoc(collection(db, "hides"), {
+          name,
+          clue,
+          lat,
+          lng,
+          photoUrl,
+          creatorId: auth.currentUser.uid,
+          creatorEmail: auth.currentUser.email,
+          finds: [],
+          createdAt: serverTimestamp()
+        }),
+        timeout(15000)
+      ]);
 
       status.textContent = "Hide posted! It's live on the map.";
       postForm.reset();
@@ -137,7 +147,9 @@ if (postForm) {
       document.getElementById('post-btn').textContent = 'Drop Pin to Set Location';
       if (window._tempMarker) map.removeLayer(window._tempMarker);
     } catch (err) {
+      console.error("POST HIDE FAILED:", err);
       status.textContent = "Error: " + err.message;
+      status.style.color = "#ff5f5f";
     }
   });
 }
