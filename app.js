@@ -3,6 +3,8 @@ import {
   collection,
   addDoc,
   doc,
+  setDoc,
+  getDocFromServer,
   updateDoc,
   arrayUnion,
   onSnapshot,
@@ -112,44 +114,76 @@ if (postForm) {
       return;
     }
 
+    // Guard against duplicate submissions if a slow network makes someone click twice.
+    const submitBtn = document.getElementById('post-btn');
+    submitBtn.disabled = true;
+    status.style.color = "#ffd23f";
     status.textContent = "Uploading...";
+
+    const timeout = (ms) => new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), ms)
+    );
 
     try {
       const photoRef = ref(storage, `hides/${Date.now()}_${photoFile.name}`);
 
-      const timeout = (ms) => new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Timed out after " + (ms/1000) + "s")), ms)
-      );
-
-      await Promise.race([uploadBytes(photoRef, photoFile), timeout(15000)]);
+      // Storage uploads can legitimately take a while on slow mobile connections,
+      // so these get a generous timeout purely as a last-resort safety net.
+      await Promise.race([uploadBytes(photoRef, photoFile), timeout(30000)]);
       status.textContent = "Photo uploaded, saving hide details...";
 
-      const photoUrl = await Promise.race([getDownloadURL(photoRef), timeout(15000)]);
+      const photoUrl = await Promise.race([getDownloadURL(photoRef), timeout(30000)]);
 
-      await Promise.race([
-        addDoc(collection(db, "hides"), {
-          name,
-          clue,
-          lat,
-          lng,
-          photoUrl,
-          creatorId: auth.currentUser.uid,
-          creatorEmail: auth.currentUser.email,
-          finds: [],
-          createdAt: serverTimestamp()
-        }),
-        timeout(15000)
-      ]);
+      // Generate the document ID client-side (no network round trip) so that if the
+      // write acknowledgment is slow or never arrives — which happens on some
+      // networks/firewalls even though the write itself reaches Firestore — we can
+      // directly check whether the doc actually landed instead of assuming failure.
+      const newHideRef = doc(collection(db, "hides"));
+      const hideData = {
+        name,
+        clue,
+        lat,
+        lng,
+        photoUrl,
+        creatorId: auth.currentUser.uid,
+        creatorEmail: auth.currentUser.email,
+        finds: [],
+        createdAt: serverTimestamp()
+      };
+
+      let saved = false;
+      try {
+        await Promise.race([setDoc(newHideRef, hideData), timeout(10000)]);
+        saved = true;
+      } catch (raceErr) {
+        // The write's ack didn't come back in time. Rather than tell the user it
+        // failed (it may well have already succeeded server-side), verify directly.
+        console.warn("Write acknowledgment delayed, verifying directly against the server:", raceErr.message);
+        try {
+          // Force a server round trip (not the local cache) so a write that only
+          // succeeded optimistically/locally is not mistaken for a real save.
+          const verifySnap = await getDocFromServer(newHideRef);
+          saved = verifySnap.exists();
+        } catch (verifyErr) {
+          console.error("Server verification also failed:", verifyErr);
+        }
+      }
+
+      if (!saved) {
+        throw new Error("Could not confirm the hide was saved. Check your connection and try again.");
+      }
 
       status.textContent = "Hide posted! It's live on the map.";
       postForm.reset();
       pendingLatLng = null;
-      document.getElementById('post-btn').textContent = 'Drop Pin to Set Location';
+      submitBtn.textContent = 'Drop Pin to Set Location';
       if (window._tempMarker) map.removeLayer(window._tempMarker);
     } catch (err) {
       console.error("POST HIDE FAILED:", err);
       status.textContent = "Error: " + err.message;
       status.style.color = "#ff5f5f";
+    } finally {
+      submitBtn.disabled = false;
     }
   });
 }
