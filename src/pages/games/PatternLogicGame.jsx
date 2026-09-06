@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { generatePuzzle } from '../../lib/games/patternLogic.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import ShapeIcon from '../../components/games/ShapeIcon.jsx';
+import GameHeader from '../../components/games/GameHeader.jsx';
+import GameSummary from '../../components/games/GameSummary.jsx';
 import './PatternLogicGame.css';
 
 const AUTO_ADVANCE_MS = 2200;
@@ -40,53 +41,24 @@ export default function PatternLogicGame() {
   if (ended) {
     return (
       <div className="pattern-game">
-        <div className="pattern-game__summary">
-          <h2>Session Complete</h2>
-          <div className="pattern-game__stats">
-            <div>
-              <span>{totalCorrect}</span>
-              <label>Correct</label>
-            </div>
-            <div>
-              <span>{totalPlayed}</span>
-              <label>Played</label>
-            </div>
-            <div>
-              <span>{bestStreak}</span>
-              <label>Best Streak</label>
-            </div>
-          </div>
-          <div className="pattern-game__summary-actions">
-            <button
-              onClick={() => {
-                setEnded(false);
-                nextPuzzle(0);
-              }}
-            >
-              Play Again
-            </button>
-            <Link to="/play">Back to Arcade</Link>
-          </div>
-        </div>
+        <GameSummary
+          stats={[
+            { label: 'Correct', value: totalCorrect },
+            { label: 'Played', value: totalPlayed },
+            { label: 'Best Streak', value: bestStreak },
+          ]}
+          onPlayAgain={() => {
+            setEnded(false);
+            nextPuzzle(0);
+          }}
+        />
       </div>
     );
   }
 
   return (
     <div className="pattern-game">
-      <div className="pattern-game__header">
-        <Link to="/play" className="pattern-game__back">
-          ← Arcade
-        </Link>
-        <div className="pattern-game__meta">
-          <span>
-            Streak <strong>{streak}</strong>
-          </span>
-          <span>
-            Best <strong>{bestStreak}</strong>
-          </span>
-        </div>
-      </div>
+      <GameHeader streak={streak} best={bestStreak} />
 
       <h2 className="pattern-game__title">What comes next?</h2>
 

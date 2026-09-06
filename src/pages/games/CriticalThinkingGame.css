@@ -1,0 +1,106 @@
+.ct-game {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ct-game__title {
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-5);
+}
+
+.ct-game__scenario {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--accent-psychology);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
+}
+
+.ct-game__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.ct-game__option {
+  padding: 13px var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 14.5px;
+  font-weight: 600;
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
+}
+
+.ct-game__option:not(:disabled):hover {
+  border-color: var(--brand);
+}
+
+.ct-game__option--correct {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 14%, var(--bg-elevated));
+  color: var(--success);
+}
+
+.ct-game__option--wrong {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 14%, var(--bg-elevated));
+  color: var(--danger);
+}
+
+.ct-game__feedback {
+  text-align: center;
+  animation: fade-up var(--duration-base) var(--ease-out);
+}
+
+.ct-game__feedback p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: var(--space-3);
+  text-align: left;
+}
+
+.ct-game__feedback p strong {
+  color: var(--text-primary);
+}
+
+.ct-game__related {
+  display: inline-block;
+  font-size: 12.5px;
+  color: var(--accent-psychology);
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.ct-game__next {
+  display: block;
+  margin: 0 auto;
+  border: none;
+  background: linear-gradient(120deg, var(--brand), #4f8bff);
+  color: white;
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 9px 24px;
+  border-radius: 999px;
+}
+
+.ct-game__end {
+  display: block;
+  margin: 0 auto;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+  text-decoration: underline;
+}

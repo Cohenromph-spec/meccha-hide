@@ -3,32 +3,6 @@
   margin: 0 auto;
 }
 
-.pattern-game__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-6);
-}
-
-.pattern-game__back {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 600;
-}
-
-.pattern-game__meta {
-  display: flex;
-  gap: var(--space-4);
-  font-size: 13px;
-  color: var(--text-tertiary);
-}
-
-.pattern-game__meta strong {
-  color: var(--text-primary);
-  font-size: 15px;
-}
-
 .pattern-game__title {
   text-align: center;
   font-size: 18px;
@@ -134,55 +108,3 @@
   text-decoration: underline;
 }
 
-.pattern-game__summary {
-  text-align: center;
-  padding: var(--space-7) 0;
-}
-
-.pattern-game__summary h2 {
-  font-size: 22px;
-  margin-bottom: var(--space-6);
-}
-
-.pattern-game__stats {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-7);
-  margin-bottom: var(--space-7);
-}
-
-.pattern-game__stats span {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--brand);
-}
-
-.pattern-game__stats label {
-  font-size: 12px;
-  color: var(--text-tertiary);
-}
-
-.pattern-game__summary-actions {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-4);
-  align-items: center;
-}
-
-.pattern-game__summary-actions button {
-  border: none;
-  background: linear-gradient(120deg, var(--brand), #4f8bff);
-  color: white;
-  font-weight: 700;
-  padding: 11px 26px;
-  border-radius: 999px;
-  font-size: 14px;
-}
-
-.pattern-game__summary-actions a {
-  color: var(--text-secondary);
-  font-size: 13.5px;
-  text-decoration: none;
-}

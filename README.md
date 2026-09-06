@@ -21,11 +21,18 @@ What's built:
   prerequisites. Edges carry a traveling "signal" pulse (SVG animateMotion) once either endpoint
   is reachable — dormant/active/lit states, not one uniform animation. "Continue Exploring" tiles
   deep-link into the graph (`?domain=`) and auto-pan/open that domain's root node.
-- **Game Arcade** (`src/pages/games/`, `src/hooks/useGameSession.js`): Pattern Logic, a
-  procedurally-generated sequence/deduction game (numeric + shape patterns, difficulty scales
-  with streak) — never runs out of content the way a fixed question bank would. `useGameSession`
-  is the reusable scoring/streak/XP plumbing future games (Human Behavior, Critical Thinking,
-  shown as honest "Coming soon" tiles) plug into without rebuilding it.
+- **Game Arcade** (`src/pages/games/`, `src/hooks/useGameSession.js`): two games live.
+  - **Pattern Logic** — procedurally-generated sequence/deduction (numeric + shape patterns,
+    difficulty scales with streak). Every generator's answer is verified against its actual
+    mathematical rule (not just "present among the options") in `/tmp`-style throwaway test
+    scripts before each ship — that distinction mattered: an early version had a generator whose
+    "next operation" formula was a disguised constant, silently wrong 100% of the time.
+  - **Critical Thinking** — hand-authored scenarios (`src/data/games/criticalThinkingScenarios.js`),
+    spot the cognitive bias/logical fallacy in a real-world vignette. Ties back into the Knowledge
+    Network: a "Connects to ⟨node⟩" link deep-links and auto-focuses the relevant node.
+  - `useGameSession` + `GameHeader`/`GameSummary` (`src/components/games/`) are the reusable
+    scoring/streak/XP/UI plumbing — Human Behavior and Detective (still "Coming soon") plug into
+    the same pieces instead of rebuilding them.
 - Progression system: overall level + per-domain knowledge levels, XP curve, Memory Tokens
 - Character foundation (silhouette, no cosmetics yet)
 - Firebase auth + Firestore persistence, with a **local-only fallback** (localStorage) so the app

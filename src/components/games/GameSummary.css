@@ -1,0 +1,53 @@
+.game-summary {
+  text-align: center;
+  padding: var(--space-7) 0;
+}
+
+.game-summary h2 {
+  font-size: 22px;
+  margin-bottom: var(--space-6);
+}
+
+.game-summary__stats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-7);
+  margin-bottom: var(--space-7);
+  flex-wrap: wrap;
+}
+
+.game-summary__stats span {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.game-summary__stats label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.game-summary__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.game-summary__actions button {
+  border: none;
+  background: linear-gradient(120deg, var(--brand), #4f8bff);
+  color: white;
+  font-weight: 700;
+  padding: 11px 26px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.game-summary__actions a {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  text-decoration: none;
+}
