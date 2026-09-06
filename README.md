@@ -7,20 +7,27 @@ project's master spec (kept in the owner's planning docs, not in this repo).
 This repo previously hosted "Meccha Hide" (a geocaching hobby app). That project is retired —
 Nexus is a fresh build in the same repo.
 
-## Status: Phase 1 — Foundation
+## Status: Phase 2 — Knowledge Network
 
 What's built:
 
 - Dark visual identity, navigation shell (Home / Explore / Play / Journey / Library / Profile)
 - Homepage command center: user header (level/title/XP/tokens), Today's Philosophy with daily
   reflection journal, Today in Nexus, Continue Exploring, Live Challenges, Surprise Me
+- **The Knowledge Network** (`src/components/network/`): a real force-directed graph (d3-force)
+  of 20 hand-authored nodes across AI / Psychology / Philosophy / World, with cross-domain links
+  (e.g. Cognitive Biases connects to Free Will, Media & Misinformation, and Decision Making).
+  Pinch-to-zoom and drag-to-pan via d3-zoom (verified on real touch input, not just desktop
+  mouse). Locked / available / explored node states, gated by prerequisites — exploring a node
+  awards XP to its domain and can unlock its neighbors live.
 - Progression system: overall level + per-domain knowledge levels, XP curve, Memory Tokens
 - Character foundation (silhouette, no cosmetics yet)
 - Firebase auth + Firestore persistence, with a **local-only fallback** (localStorage) so the app
-  is fully usable before any Firebase project is wired up
+  is fully usable before any Firebase project is wired up — including live UI updates in that
+  mode (see `localListeners` in `src/lib/store.js`), not just after a manual reload.
 
-Explicitly **not** built yet (see roadmap below): the interactive Knowledge Network graph, AI
-integration, the Game Arcade, achievements, and character cosmetics.
+Explicitly **not** built yet (see roadmap below): AI-generated network expansion, AI integration
+generally, the Game Arcade, achievements, and character cosmetics.
 
 ## Stack
 
@@ -69,8 +76,8 @@ build has them too (Settings → Secrets and variables → Actions).
 
 ## Roadmap
 
-1. ~~Foundation~~ (this phase)
-2. Knowledge Network — the interactive graph centerpiece
+1. ~~Foundation~~
+2. ~~Knowledge Network — the interactive graph centerpiece~~ (this phase)
 3. Daily experience depth (AI-generated daily content)
 4. Live Challenges — custom challenge generation
 5. AI Brain — Claude-powered personalized learning

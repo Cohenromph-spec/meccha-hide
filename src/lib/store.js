@@ -44,12 +44,18 @@ function readLocal() {
   }
 }
 
+// localStorage has no same-tab change event (the native `storage` event only
+// fires in *other* tabs), so local mode needs its own tiny pub-sub or the
+// UI never hears about writes it made itself — this set is that pub-sub.
+const localListeners = new Set();
+
 function writeLocal(profile) {
   try {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(profile));
   } catch {
     // Private browsing / storage disabled — profile just won't persist. Not fatal.
   }
+  localListeners.forEach((fn) => fn(profile));
 }
 
 /** Subscribe to profile changes. Returns an unsubscribe function. */
@@ -67,8 +73,9 @@ export function subscribeProfile(uid, callback) {
     });
   }
 
+  localListeners.add(callback);
   callback(readLocal());
-  return () => {};
+  return () => localListeners.delete(callback);
 }
 
 export async function getProfile(uid) {
