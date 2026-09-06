@@ -89,9 +89,11 @@ function alternating() {
   for (let i = 0; i < 3; i += 1) {
     seq.push(seq[seq.length - 1] + (i % 2 === 0 ? add : -sub));
   }
-  const last = seq[seq.length - 1];
-  const nextOp = seq.length % 2 === 0 ? add : -sub; // continues the alternation
-  const answer = last + nextOp;
+  // The loop always runs i = 0, 1, 2 (+add, -sub, +add) — so the next step
+  // (i = 3) is always -sub. This used to be computed from seq.length, which
+  // is always 4 here regardless of add/sub, making that a disguised
+  // constant that was wrong 100% of the time. Fixed: just state it plainly.
+  const answer = seq[seq.length - 1] - sub;
   return {
     kind: 'number',
     sequence: seq,
@@ -148,24 +150,34 @@ function shapeCycle() {
   };
 }
 
-function shapeGrowingCount() {
-  // e.g. circle, square-square, circle, square-square-square... a count grows each time a shape recurs
-  const a = SHAPES[randInt(0, SHAPES.length - 1)];
-  const b = SHAPES.filter((s) => s !== a)[randInt(0, SHAPES.length - 2)];
-  const seq = [a, b, b, a];
-  const answer = b;
+function shapePairs() {
+  // AABB as a genuine period-4 repeating cycle (a,a,b,b,a,a,b,b,...) rather
+  // than "then some new shape starts" — that first draft was ambiguous
+  // between the two unused shapes, no more derivable than shapeGrowingCount
+  // was. This one wraps back to the start of its own 4-slot cycle, same
+  // grounding as shapeCycle, just with an AABB rhythm instead of ABAB/ABC.
+  const [a, b] = shuffle(SHAPES).slice(0, 2);
+  const cycle = [a, a, b, b];
+  const seq = [0, 1, 2, 3].map((i) => cycle[i % cycle.length]);
+  const answer = cycle[4 % cycle.length];
   const distractors = shuffle(SHAPES.filter((s) => s !== answer)).slice(0, 3);
   return {
     kind: 'shape',
     sequence: seq,
     answer,
     options: shuffle([answer, ...distractors]),
-    explanation: 'Look at which shape is due to repeat next in the pattern.',
+    explanation: 'Each shape appears twice, then the pattern repeats from the start.',
   };
 }
 
+// Exported individually (in addition to generatePuzzle) so each generator's
+// math can be verified directly against its stated rule, not just checked
+// for internal consistency (answer present among options) — that weaker
+// check previously let a wrong-answer bug in `alternating` ship undetected.
+export { arithmetic, geometric, alternating, fibonacciLike, squares, shapeCycle, shapePairs };
+
 const EASY = [arithmetic, shapeCycle];
-const MEDIUM = [geometric, alternating, shapeGrowingCount];
+const MEDIUM = [geometric, alternating, shapePairs];
 const HARD = [fibonacciLike, squares];
 
 /** Difficulty rises with streak — easy generators dominate early, harder ones mix in later. */
