@@ -1,0 +1,71 @@
+.continue-exploring {
+  margin-top: var(--space-6);
+}
+
+.continue-exploring__heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.continue-exploring__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.domain-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: background var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.domain-tile:hover {
+  background: var(--bg-surface-hover);
+  transform: translateY(-1px);
+}
+
+.domain-tile__ring {
+  --size: 40px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(var(--accent) calc(var(--progress) * 360deg), var(--bg-surface) 0);
+  position: relative;
+}
+
+.domain-tile__ring::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+}
+
+.domain-tile__ring span {
+  position: relative;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.domain-tile__name {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.domain-tile__label {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+}

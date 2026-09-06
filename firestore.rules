@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// Personal single-user Nexus: only the signed-in owner can read or write
+// their own subtree. When Nexus eventually supports multiple accounts,
+// this same "request.auth.uid == the doc's uid" shape is what makes it
+// safe to open up signups — nothing here changes, it just applies to more
+// people.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /{subcollection=**} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+  }
+}

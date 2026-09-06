@@ -1,0 +1,125 @@
+.surprise-me {
+  --accent: var(--brand);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 14%, var(--bg-elevated)), var(--bg-elevated) 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.surprise-me__spark {
+  color: var(--accent);
+  margin-bottom: var(--space-1);
+}
+
+.surprise-me__spark.spin {
+  animation: spark-spin 260ms var(--ease-out);
+}
+
+@keyframes spark-spin {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(160deg) scale(1.15);
+  }
+  to {
+    transform: rotate(320deg) scale(1);
+  }
+}
+
+.surprise-me h3 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.surprise-me p {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3);
+}
+
+.surprise-me__button {
+  border: none;
+  background: linear-gradient(120deg, var(--brand), #4f8bff);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px var(--brand-glow);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.surprise-me__button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.surprise-me__button:disabled {
+  opacity: 0.7;
+}
+
+.surprise-me__result {
+  width: 100%;
+  text-align: left;
+  animation: fade-up var(--duration-base) var(--ease-out);
+}
+
+.surprise-me__result-kind {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+
+.surprise-me__result h4 {
+  font-size: 17px;
+  margin-bottom: var(--space-2);
+  line-height: 1.4;
+}
+
+.surprise-me__result-fact {
+  font-size: 13.5px !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.6;
+  margin-bottom: var(--space-2) !important;
+}
+
+.surprise-me__result-why {
+  font-size: 12.5px !important;
+  color: var(--text-tertiary) !important;
+  line-height: 1.6;
+  margin-bottom: var(--space-4) !important;
+}
+
+.surprise-me__result-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.surprise-me__result-actions button {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.surprise-me__result-actions button:disabled {
+  opacity: 0.6;
+}
+
+.surprise-me__again {
+  border: none !important;
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+}

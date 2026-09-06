@@ -1,0 +1,115 @@
+.profile-page__character {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: var(--space-6);
+}
+
+.profile-page__tokens {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.profile-page__account h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.profile-page__notice {
+  font-size: 13.5px;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.auth-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 320px;
+}
+
+.auth-panel__tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.auth-panel__tabs button {
+  flex: 1;
+  padding: 8px 0;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-panel__tabs button.active {
+  border-color: var(--brand);
+  color: var(--text-primary);
+  background: var(--brand-soft);
+}
+
+.auth-panel input {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 13.5px;
+}
+
+.auth-panel input:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.auth-panel__submit {
+  border: none;
+  background: linear-gradient(120deg, var(--brand), #4f8bff);
+  color: white;
+  font-weight: 700;
+  padding: 10px 0;
+  border-radius: var(--radius-sm);
+}
+
+.auth-panel__submit:disabled {
+  opacity: 0.7;
+}
+
+.auth-panel__error {
+  font-size: 12.5px;
+  color: var(--danger);
+}
+
+.auth-panel__hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.profile-page__signed-in {
+  font-size: 14px;
+}
+
+.profile-page__logout {
+  margin-top: var(--space-3);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
