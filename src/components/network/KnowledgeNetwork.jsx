@@ -3,7 +3,7 @@ import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } 
 import { zoom as d3zoom, zoomIdentity } from 'd3-zoom';
 import { select } from 'd3-selection';
 import { knowledgeNodes } from '../../data/knowledgeNodes.js';
-import { buildEdges, nodeState } from '../../lib/graph.js';
+import { buildEdges, nodeState, edgeActivity } from '../../lib/graph.js';
 import { categoryAccent } from '../../lib/categories.js';
 import { useUser } from '../../context/UserContext.jsx';
 import { XP_AWARDS } from '../../lib/progression.js';
@@ -16,14 +16,18 @@ import './KnowledgeNetwork.css';
 // internal geometry uses these units."
 const WIDTH = 1040;
 const HEIGHT = 720;
+const FOCUS_SCALE = 1.2;
 
-export default function KnowledgeNetwork() {
+export default function KnowledgeNetwork({ focusDomain }) {
   const svgRef = useRef(null);
   const viewportRef = useRef(null);
+  const zoomBehaviorRef = useRef(null);
+  const focusedRef = useRef(null);
   const [positions, setPositions] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const { profile, markNodeExplored, gainXp, gainTokens } = useUser();
 
+  const nodesById = useMemo(() => new Map(knowledgeNodes.map((n) => [n.id, n])), []);
   const edges = useMemo(() => buildEdges(knowledgeNodes), []);
 
   // Run the force simulation once. It settles (alpha decays) after a couple
@@ -62,6 +66,7 @@ export default function KnowledgeNetwork() {
         viewport.attr('transform', event.transform);
       });
 
+    zoomBehaviorRef.current = zoomBehavior;
     svg.call(zoomBehavior);
     // Scale down slightly for breathing room, pivoting on the viewBox's own
     // center — pivoting on (0,0) instead would shift content up-left and
@@ -77,6 +82,27 @@ export default function KnowledgeNetwork() {
 
     return () => svg.on('.zoom', null);
   }, []);
+
+  // Deep link from "Continue Exploring" (?domain=ai etc.): once the layout
+  // has settled, open that domain's root node and pan/zoom to center it —
+  // runs once per incoming focusDomain, not on every simulation tick.
+  useEffect(() => {
+    if (!focusDomain || !positions || !zoomBehaviorRef.current) return;
+    if (focusedRef.current === focusDomain) return;
+    const pos = positions.nodes[focusDomain];
+    if (!pos) return;
+
+    focusedRef.current = focusDomain;
+    setSelectedId(focusDomain);
+
+    const svg = select(svgRef.current);
+    const tx = WIDTH / 2 - pos.x * FOCUS_SCALE;
+    const ty = HEIGHT / 2 - pos.y * FOCUS_SCALE;
+    svg
+      .transition()
+      .duration(650)
+      .call(zoomBehaviorRef.current.transform, zoomIdentity.translate(tx, ty).scale(FOCUS_SCALE));
+  }, [focusDomain, positions]);
 
   const selectedNode = knowledgeNodes.find((n) => n.id === selectedId) ?? null;
 
@@ -102,18 +128,37 @@ export default function KnowledgeNetwork() {
             positions.edges.map((edge, i) => {
               const a = positions.nodes[edge.source];
               const b = positions.nodes[edge.target];
-              if (!a || !b) return null;
-              const bothExplored =
-                profile.exploredNodeIds.includes(edge.source) && profile.exploredNodeIds.includes(edge.target);
+              const sourceNode = nodesById.get(edge.source);
+              const targetNode = nodesById.get(edge.target);
+              if (!a || !b || !sourceNode || !targetNode) return null;
+
+              const activity = edgeActivity(sourceNode, targetNode, profile.exploredNodeIds);
+              const pulseColor = categoryAccent(sourceNode.domain);
+
               return (
-                <line
-                  key={i}
-                  x1={a.x}
-                  y1={a.y}
-                  x2={b.x}
-                  y2={b.y}
-                  className={`knowledge-network__edge${bothExplored ? ' knowledge-network__edge--lit' : ''}`}
-                />
+                <g key={i}>
+                  <line
+                    x1={a.x}
+                    y1={a.y}
+                    x2={b.x}
+                    y2={b.y}
+                    className={`knowledge-network__edge knowledge-network__edge--${activity}`}
+                  />
+                  {activity !== 'dormant' && (
+                    <circle
+                      r={activity === 'lit' ? 3.4 : 2.6}
+                      className={`knowledge-network__pulse-dot knowledge-network__pulse-dot--${activity}`}
+                      style={{ '--accent': pulseColor }}
+                    >
+                      <animateMotion
+                        dur={activity === 'lit' ? '1.5s' : '2.6s'}
+                        begin={`${(i % 7) * 0.3}s`}
+                        repeatCount="indefinite"
+                        path={`M${a.x},${a.y} L${b.x},${b.y}`}
+                      />
+                    </circle>
+                  )}
+                </g>
               );
             })}
 

@@ -26,23 +26,38 @@
 }
 
 .knowledge-network__edge {
-  stroke: var(--border);
   stroke-width: 1.2;
-  opacity: 0.6;
+}
+
+.knowledge-network__edge--dormant {
+  stroke: var(--border);
+  opacity: 0.5;
+}
+
+.knowledge-network__edge--active {
+  stroke: var(--text-tertiary);
+  opacity: 0.7;
 }
 
 .knowledge-network__edge--lit {
-  stroke: var(--text-tertiary);
-  stroke-width: 1.6;
-  stroke-dasharray: 3 4;
-  opacity: 0.85;
-  animation: edge-flow 1.6s linear infinite;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  opacity: 0.9;
 }
 
-@keyframes edge-flow {
-  to {
-    stroke-dashoffset: -14;
-  }
+/* The traveling dot is what actually reads as "signal" — like a neural
+   impulse moving along the pathway — rather than a static glowing line. */
+.knowledge-network__pulse-dot {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 3px var(--accent));
+}
+
+.knowledge-network__pulse-dot--active {
+  opacity: 0.8;
+}
+
+.knowledge-network__pulse-dot--lit {
+  opacity: 1;
 }
 
 .knowledge-node {

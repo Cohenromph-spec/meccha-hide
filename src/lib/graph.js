@@ -24,3 +24,18 @@ export function nodeState(node, exploredIds) {
   const locked = node.requires.some((id) => !exploredIds.includes(id));
   return locked ? 'locked' : 'available';
 }
+
+/**
+ * An edge "carries a signal" once either endpoint is reachable — this is
+ * what makes the graph read as a living neural network instead of a static
+ * diagram: the frontier around what you've unlocked visibly pulses, fully
+ * unexplored territory stays dormant, and a connection between two things
+ * you've actually explored lights up as a completed circuit.
+ */
+export function edgeActivity(sourceNode, targetNode, exploredIds) {
+  const a = nodeState(sourceNode, exploredIds);
+  const b = nodeState(targetNode, exploredIds);
+  if (a === 'explored' && b === 'explored') return 'lit';
+  if (a === 'locked' && b === 'locked') return 'dormant';
+  return 'active';
+}

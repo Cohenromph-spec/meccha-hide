@@ -19,7 +19,12 @@ export default function ContinueExploring() {
           const accent = `var(${CATEGORIES[domain].var})`;
 
           return (
-            <Link key={domain} to="/explore" className="domain-tile" style={{ '--accent': accent }}>
+            <Link
+              key={domain}
+              to={`/explore?domain=${domain}`}
+              className="domain-tile"
+              style={{ '--accent': accent }}
+            >
               <div className="domain-tile__ring" style={{ '--progress': progress }}>
                 <span>{level}</span>
               </div>
