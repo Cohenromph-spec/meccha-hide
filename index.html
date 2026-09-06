@@ -1,80 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meccha Hide</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-</head>
-<body>
-
-<header>
-  <h1>Meccha Hide</h1>
-  <p class="tagline">Find them. Hide them. Paint them.</p>
-</header>
-
-<section id="auth-section">
-  <div class="auth-box">
-    <h2>Log In</h2>
-    <form id="login-form">
-      <input type="email" id="login-email" placeholder="Email" required>
-      <input type="password" id="login-password" placeholder="Password" required>
-      <button type="submit">Log In</button>
-    </form>
-  </div>
-
-  <div class="auth-box">
-    <h2>Sign Up</h2>
-    <form id="signup-form">
-      <input type="email" id="signup-email" placeholder="Email" required>
-      <input type="password" id="signup-password" placeholder="Password (6+ characters)" required minlength="6">
-      <button type="submit">Sign Up</button>
-    </form>
-  </div>
-
-  <p id="auth-status"></p>
-</section>
-
-<section id="app-section" style="display:none;">
-  <div class="topbar">
-    <span>Logged in as <strong id="user-email"></strong></span>
-    <button id="logout-btn">Log Out</button>
-  </div>
-
-  <div class="app-layout">
-    <div id="map"></div>
-
-    <div class="side-panel">
-      <h3>Post a Hide</h3>
-      <p class="hint">Click a spot on the map, then fill this out.</p>
-      <form id="post-form">
-        <input type="text" id="hide-name" placeholder="Name (e.g. Blue Chameleon)" required>
-        <textarea id="hide-clue" placeholder="Clue / description" rows="3" required></textarea>
-        <input type="file" id="hide-photo" accept="image/*" required>
-        <input type="hidden" id="hide-lat">
-        <input type="hidden" id="hide-lng">
-        <button type="submit" id="post-btn">Drop Pin to Set Location</button>
-      </form>
-      <p id="post-status"></p>
-
-      <div id="selected-hide" style="display:none;">
-        <hr>
-        <h3 id="selected-name"></h3>
-        <p id="selected-clue"></p>
-        <img id="selected-photo" alt="hide photo">
-        <p id="selected-finds"></p>
-        <input type="file" id="confirm-photo" accept="image/*">
-        <button id="confirm-btn">I Found It! Upload Proof</button>
-        <p id="confirm-status"></p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<script type="module" src="firebase-config.js"></script>
-<script type="module" src="auth.js"></script>
-<script type="module" src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus</title>
+    <meta name="description" content="Nexus — open it when you're bored. Discover, think, learn, grow." />
+    <link rel="icon" href="/nexus-icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

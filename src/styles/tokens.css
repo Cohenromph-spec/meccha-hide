@@ -1,0 +1,68 @@
+/*
+  NEXUS DESIGN SYSTEM — TOKENS
+  Dark-first, controlled color use. Category accents are meaningful, not decorative:
+  each pillar/domain gets exactly one accent, used sparingly (borders, glows, small
+  labels), never as large fills. Do not add new accents without a reason.
+*/
+
+:root {
+  /* ---- Surface scale (near-black, not pure black — pure black kills depth) ---- */
+  --bg: #0a0b10;
+  --bg-elevated: #12141c;
+  --bg-surface: #181b25;
+  --bg-surface-hover: #1e2230;
+  --border: #262a38;
+  --border-soft: #1c1f2b;
+
+  /* ---- Text ---- */
+  --text-primary: #eef0f6;
+  --text-secondary: #9a9fb5;
+  --text-tertiary: #5c6178;
+
+  /* ---- Brand (Nexus itself — used for chrome, XP, primary actions only) ---- */
+  --brand: #7c5cff;
+  --brand-soft: #7c5cff26;
+  --brand-glow: #7c5cff55;
+
+  /* ---- Domain accents (one per pillar/category — never mix on one element) ---- */
+  --accent-ai: #3ec6ff;
+  --accent-ai-soft: #3ec6ff20;
+  --accent-psychology: #ff8f6b;
+  --accent-psychology-soft: #ff8f6b20;
+  --accent-philosophy: #c9a6ff;
+  --accent-philosophy-soft: #c9a6ff20;
+  --accent-world: #2fe0b0;
+  --accent-world-soft: #2fe0b020;
+
+  /* ---- Semantic ---- */
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+
+  /* ---- Typography ---- */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', var(--font-body);
+
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ---- Radius — restrained, not "everything is a rounded card" ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 280ms;
+  --duration-slow: 560ms;
+
+  color-scheme: dark;
+}

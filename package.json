@@ -1,0 +1,24 @@
+{
+  "name": "nexus",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Nexus — a personal AI-powered learning, discovery, and self-development game.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "firebase": "^10.12.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "gh-pages": "^6.1.1",
+    "vite": "^5.4.1"
+  }
+}

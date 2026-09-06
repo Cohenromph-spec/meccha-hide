@@ -1,0 +1,37 @@
+.today-nexus {
+  margin-top: var(--space-6);
+}
+
+.today-nexus__heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.today-nexus__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.today-nexus__soon {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  color: var(--text-tertiary);
+}
+
+.today-nexus__soon-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.today-nexus__soon p {
+  font-size: 12.5px;
+  line-height: 1.5;
+}

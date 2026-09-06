@@ -1,0 +1,151 @@
+.philosophy-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+}
+
+.philosophy-card::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  right: -20%;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, var(--accent-philosophy-soft), transparent 70%);
+  pointer-events: none;
+}
+
+.philosophy-card__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-philosophy);
+  margin-bottom: var(--space-2);
+}
+
+.philosophy-card__title {
+  font-size: 24px;
+  margin-bottom: var(--space-4);
+}
+
+.philosophy-card__quote {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  border-left: 2px solid var(--accent-philosophy);
+  padding-left: var(--space-4);
+}
+
+.philosophy-card__source {
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-5);
+  padding-left: calc(var(--space-4) + 2px);
+}
+
+.philosophy-card__meaning {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-3);
+}
+
+.philosophy-card__why {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-3);
+  animation: fade-up var(--duration-base) var(--ease-out);
+}
+
+.philosophy-card__why strong {
+  color: var(--text-primary);
+}
+
+.philosophy-card__toggle {
+  background: none;
+  border: none;
+  color: var(--accent-philosophy);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: var(--space-5);
+}
+
+.philosophy-card__task {
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.philosophy-card__task-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+.philosophy-card__task p {
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+
+.philosophy-card__reflect textarea {
+  width: 100%;
+  resize: vertical;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: var(--space-3);
+  margin: var(--space-2) 0 var(--space-3);
+}
+
+.philosophy-card__reflect textarea:focus {
+  outline: none;
+  border-color: var(--accent-philosophy);
+}
+
+.philosophy-card__ratings {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.philosophy-card__ratings button {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.philosophy-card__ratings button:hover {
+  border-color: var(--accent-philosophy);
+  color: var(--text-primary);
+}
+
+.philosophy-card__done {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+}
+
+.philosophy-card__done strong {
+  color: var(--text-primary);
+}
