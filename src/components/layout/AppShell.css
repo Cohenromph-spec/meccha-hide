@@ -1,7 +1,14 @@
 .nexus-shell {
   display: flex;
   min-height: 100vh;
-  background: var(--bg);
+  /* No background here on purpose — AmbientBackground sits behind this as a
+     true sibling, and an opaque background on this element would paint
+     over it. Explicit position + z-index (rather than a negative z-index
+     on the background layer) sidesteps the well-known quirk where negative
+     z-index inside a flex layout with a `position: sticky` sibling doesn't
+     stack the way you'd expect. */
+  position: relative;
+  z-index: 1;
 }
 
 .nexus-shell__main {
