@@ -31,6 +31,7 @@ export const DEFAULT_PROFILE = {
   savedDiscoveryIds: [],
   reflections: [],
   challengeProgress: {},
+  gameStats: {},
   createdAt: null,
 };
 
@@ -139,4 +140,16 @@ export async function completeChallenge(uid, challengeId) {
       [challengeId]: { ...existing, completedAt: new Date().toISOString() },
     },
   });
+}
+
+/** Record one round of a game (correct/incorrect + the streak reached). */
+export async function recordGameRound(uid, gameId, { correct, streak }) {
+  const current = await getProfile(uid);
+  const existing = current.gameStats[gameId] ?? { totalPlayed: 0, totalCorrect: 0, bestStreak: 0 };
+  const next = {
+    totalPlayed: existing.totalPlayed + 1,
+    totalCorrect: existing.totalCorrect + (correct ? 1 : 0),
+    bestStreak: Math.max(existing.bestStreak, streak),
+  };
+  await updateProfile(uid, { gameStats: { ...current.gameStats, [gameId]: next } });
 }

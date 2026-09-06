@@ -10,6 +10,7 @@ import {
   addReflection,
   incrementChallenge,
   completeChallenge,
+  recordGameRound,
 } from '../lib/store';
 import { levelFromXp, titleForLevel, XP_AWARDS } from '../lib/progression';
 import { firebaseReady } from '../lib/firebase';
@@ -86,6 +87,11 @@ export function UserProvider({ children }) {
     [uid, gainXp, gainTokens]
   );
 
+  const recordGameResult = useCallback(
+    (gameId, result) => recordGameRound(uid, gameId, result),
+    [uid]
+  );
+
   const levelInfo = useMemo(() => levelFromXp(profile.xp), [profile.xp]);
   const title = useMemo(() => titleForLevel(levelInfo.level), [levelInfo.level]);
 
@@ -105,6 +111,7 @@ export function UserProvider({ children }) {
       todaysReflection,
       reflectOnToday,
       logChallengeProgress,
+      recordGameResult,
     }),
     [
       authUser,
@@ -119,6 +126,7 @@ export function UserProvider({ children }) {
       todaysReflection,
       reflectOnToday,
       logChallengeProgress,
+      recordGameResult,
     ]
   );
 

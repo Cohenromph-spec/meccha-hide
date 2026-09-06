@@ -7,27 +7,33 @@ project's master spec (kept in the owner's planning docs, not in this repo).
 This repo previously hosted "Meccha Hide" (a geocaching hobby app). That project is retired —
 Nexus is a fresh build in the same repo.
 
-## Status: Phase 2 — Knowledge Network
+## Status: Phase 6 — Game Arcade (started)
 
 What's built:
 
 - Dark visual identity, navigation shell (Home / Explore / Play / Journey / Library / Profile)
+- Ambient background: slow-drifting colored glows behind the whole app (`src/components/layout/AmbientBackground.jsx`)
 - Homepage command center: user header (level/title/XP/tokens), Today's Philosophy with daily
   reflection journal, Today in Nexus, Continue Exploring, Live Challenges, Surprise Me
-- **The Knowledge Network** (`src/components/network/`): a real force-directed graph (d3-force)
-  of 20 hand-authored nodes across AI / Psychology / Philosophy / World, with cross-domain links
-  (e.g. Cognitive Biases connects to Free Will, Media & Misinformation, and Decision Making).
-  Pinch-to-zoom and drag-to-pan via d3-zoom (verified on real touch input, not just desktop
-  mouse). Locked / available / explored node states, gated by prerequisites — exploring a node
-  awards XP to its domain and can unlock its neighbors live.
+- **The Knowledge Network** (`src/components/network/`): a force-directed graph (d3-force) of 20
+  hand-authored nodes across AI / Psychology / Philosophy / World, with cross-domain links.
+  Pinch-to-zoom and drag-to-pan via d3-zoom. Locked / available / explored node states gated by
+  prerequisites. Edges carry a traveling "signal" pulse (SVG animateMotion) once either endpoint
+  is reachable — dormant/active/lit states, not one uniform animation. "Continue Exploring" tiles
+  deep-link into the graph (`?domain=`) and auto-pan/open that domain's root node.
+- **Game Arcade** (`src/pages/games/`, `src/hooks/useGameSession.js`): Pattern Logic, a
+  procedurally-generated sequence/deduction game (numeric + shape patterns, difficulty scales
+  with streak) — never runs out of content the way a fixed question bank would. `useGameSession`
+  is the reusable scoring/streak/XP plumbing future games (Human Behavior, Critical Thinking,
+  shown as honest "Coming soon" tiles) plug into without rebuilding it.
 - Progression system: overall level + per-domain knowledge levels, XP curve, Memory Tokens
 - Character foundation (silhouette, no cosmetics yet)
 - Firebase auth + Firestore persistence, with a **local-only fallback** (localStorage) so the app
   is fully usable before any Firebase project is wired up — including live UI updates in that
   mode (see `localListeners` in `src/lib/store.js`), not just after a manual reload.
 
-Explicitly **not** built yet (see roadmap below): AI-generated network expansion, AI integration
-generally, the Game Arcade, achievements, and character cosmetics.
+Explicitly **not** built yet (see roadmap below): AI integration of any kind (daily content is
+still hand-authored), custom challenge generation, achievements, and character cosmetics.
 
 ## Stack
 
@@ -76,10 +82,16 @@ build has them too (Settings → Secrets and variables → Actions).
 
 ## Roadmap
 
+Phases 3-5 (AI-generated daily content, custom challenge generation, and the AI Brain) are
+deferred until an Anthropic API key + a small backend proxy are worth setting up — GitHub Pages
+is static hosting and can't hold a secret key, so this needs real infra + a small recurring API
+cost, not just code. Jumped ahead to Phase 6 in the meantime since it needed neither.
+
 1. ~~Foundation~~
-2. ~~Knowledge Network — the interactive graph centerpiece~~ (this phase)
-3. Daily experience depth (AI-generated daily content)
-4. Live Challenges — custom challenge generation
-5. AI Brain — Claude-powered personalized learning
-6. Game Arcade — a few polished games, not many shallow ones
+2. ~~Knowledge Network — the interactive graph centerpiece~~
+3. Daily experience depth (AI-generated daily content) — **deferred, needs an AI provider decision**
+4. Live Challenges — custom challenge generation — **deferred, same reason**
+5. AI Brain — Claude-powered personalized learning — **deferred, same reason**
+6. ~~Game Arcade — a few polished games, not many shallow ones~~ (this phase — Pattern Logic
+   shipped; Human Behavior and Critical Thinking still to come)
 7. Progression — achievements, cosmetics, character growth

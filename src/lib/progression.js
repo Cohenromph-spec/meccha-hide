@@ -69,4 +69,6 @@ export const XP_AWARDS = {
   challengeCompleted: 100,
   nodeExplored: 20,
   nodeMastered: 60,
+  gameRoundCorrect: 8,
+  gameStreakBonus: 15,
 };

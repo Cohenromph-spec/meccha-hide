@@ -1,0 +1,79 @@
+.arcade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  max-width: 900px;
+}
+
+.arcade-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  position: relative;
+}
+
+.arcade-card--live {
+  background: var(--bg-elevated);
+  transition: transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+
+.arcade-card--live:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand);
+}
+
+.arcade-card--soon {
+  border-style: dashed;
+  color: var(--text-tertiary);
+}
+
+.arcade-card__badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+  background: var(--brand-soft);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: var(--space-3);
+}
+
+.arcade-card__badge--soon {
+  color: var(--text-tertiary);
+  background: var(--bg-surface);
+}
+
+.arcade-card h3 {
+  font-size: 17px;
+  margin-bottom: var(--space-2);
+  color: var(--text-primary);
+}
+
+.arcade-card--soon h3 {
+  color: var(--text-secondary);
+}
+
+.arcade-card p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+}
+
+.arcade-card--live p {
+  color: var(--text-secondary);
+}
+
+.arcade-card__stats {
+  margin-top: var(--space-3);
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.arcade-card__stats strong {
+  color: var(--brand);
+}
