@@ -1,21 +1,22 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { criticalThinkingScenarios } from '../../data/games/criticalThinkingScenarios.js';
 import { knowledgeNodes } from '../../data/knowledgeNodes.js';
-import { pickRandom, shuffleOptions } from '../../lib/games/scenarioPicker.js';
+import { createScenarioDeck, shuffleOptions } from '../../lib/games/scenarioPicker.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import GameHeader from '../../components/games/GameHeader.jsx';
 import GameSummary from '../../components/games/GameSummary.jsx';
 import './CriticalThinkingGame.css';
 
-function newRound(excludeId) {
-  const scenario = pickRandom(criticalThinkingScenarios, excludeId);
+function newRound(draw) {
+  const scenario = draw();
   return { scenario, options: shuffleOptions([scenario.flaw, ...scenario.distractors]) };
 }
 
 export default function CriticalThinkingGame() {
   const { streak, bestStreak, totalCorrect, totalPlayed, submitAnswer } = useGameSession('criticalThinking');
-  const [round, setRound] = useState(() => newRound(null));
+  const deckRef = useRef(createScenarioDeck(criticalThinkingScenarios));
+  const [round, setRound] = useState(() => newRound(deckRef.current));
   const [picked, setPicked] = useState(null);
   const [ended, setEnded] = useState(false);
 
@@ -30,7 +31,7 @@ export default function CriticalThinkingGame() {
 
   function nextRound() {
     setPicked(null);
-    setRound(newRound(scenario.id));
+    setRound(newRound(deckRef.current));
   }
 
   if (ended) {

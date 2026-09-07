@@ -1,19 +1,30 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { humanBehaviorScenarios } from '../../data/games/humanBehaviorScenarios.js';
-import { pickRandom } from '../../lib/games/scenarioPicker.js';
+import { createScenarioDeck, shuffleOptions } from '../../lib/games/scenarioPicker.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import GameHeader from '../../components/games/GameHeader.jsx';
 import GameSummary from '../../components/games/GameSummary.jsx';
 import './HumanBehaviorGame.css';
 
+function newRound(draw) {
+  const scenario = draw();
+  // Shuffle display order — the data always lists reasonable explanations
+  // before the leaps, for readability while authoring. Without shuffling,
+  // the game is solvable by position alone ("the top ones are always
+  // right") without reading a single scenario, which defeats the point.
+  return { scenario, explanations: shuffleOptions(scenario.explanations) };
+}
+
 export default function HumanBehaviorGame() {
   const { streak, bestStreak, totalCorrect, totalPlayed, submitAnswer } = useGameSession('humanBehavior');
-  const [scenario, setScenario] = useState(() => pickRandom(humanBehaviorScenarios, null));
+  const deckRef = useRef(createScenarioDeck(humanBehaviorScenarios));
+  const [round, setRound] = useState(() => newRound(deckRef.current));
   const [selected, setSelected] = useState(new Set());
   const [revealed, setRevealed] = useState(false);
   const [ended, setEnded] = useState(false);
 
-  const reasonableTotal = scenario.explanations.filter((e) => e.reasonable).length;
+  const { scenario, explanations } = round;
+  const reasonableTotal = explanations.filter((e) => e.reasonable).length;
 
   function toggle(index) {
     if (revealed) return;
@@ -29,7 +40,7 @@ export default function HumanBehaviorGame() {
     if (selected.size === 0 || revealed) return;
     let reasonableSelected = 0;
     let overreachSelected = 0;
-    scenario.explanations.forEach((e, i) => {
+    explanations.forEach((e, i) => {
       if (!selected.has(i)) return;
       if (e.reasonable) reasonableSelected += 1;
       else overreachSelected += 1;
@@ -40,7 +51,7 @@ export default function HumanBehaviorGame() {
   }
 
   function nextRound() {
-    setScenario(pickRandom(humanBehaviorScenarios, scenario.id));
+    setRound(newRound(deckRef.current));
     setSelected(new Set());
     setRevealed(false);
   }
@@ -76,7 +87,7 @@ export default function HumanBehaviorGame() {
       <div className="hb-game__scenario">{scenario.scenario}</div>
 
       <div className="hb-game__options">
-        {scenario.explanations.map((exp, i) => {
+        {explanations.map((exp, i) => {
           const isSelected = selected.has(i);
           const stateClass = revealed
             ? exp.reasonable
