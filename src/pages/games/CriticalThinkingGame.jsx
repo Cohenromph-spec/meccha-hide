@@ -94,6 +94,9 @@ export default function CriticalThinkingGame() {
           <button className="ct-game__next" onClick={nextRound}>
             Next →
           </button>
+          <button className="ct-game__end" onClick={() => setEnded(true)}>
+            End Session
+          </button>
         </div>
       )}
 

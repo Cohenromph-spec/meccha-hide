@@ -22,13 +22,11 @@ const LIVE_GAMES = [
     title: 'Human Behavior',
     tagline: 'Multiple explanations for one social situation — spot the reasonable ones, skip the leaps.',
   },
-];
-
-const COMING_SOON = [
   {
     id: 'detective',
+    path: '/play/detective',
     title: 'Detective',
-    tagline: 'Work a mystery from evidence and contradictions.',
+    tagline: 'Work a mystery from clues — eliminate the suspects, find the one nothing rules out.',
   },
 ];
 
@@ -55,14 +53,6 @@ export default function Play() {
             </Link>
           );
         })}
-
-        {COMING_SOON.map((game) => (
-          <div key={game.id} className="arcade-card arcade-card--soon">
-            <div className="arcade-card__badge arcade-card__badge--soon">Coming soon</div>
-            <h3>{game.title}</h3>
-            <p>{game.tagline}</p>
-          </div>
-        ))}
       </div>
     </div>
   );

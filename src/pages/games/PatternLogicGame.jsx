@@ -95,6 +95,9 @@ export default function PatternLogicGame() {
           <button className="pattern-game__next" onClick={() => nextPuzzle(streak)}>
             Next →
           </button>
+          <button className="pattern-game__end" onClick={() => setEnded(true)}>
+            End Session
+          </button>
         </div>
       )}
 

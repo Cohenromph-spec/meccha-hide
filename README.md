@@ -7,7 +7,7 @@ project's master spec (kept in the owner's planning docs, not in this repo).
 This repo previously hosted "Meccha Hide" (a geocaching hobby app). That project is retired —
 Nexus is a fresh build in the same repo.
 
-## Status: Phase 6 — Game Arcade (started)
+## Status: Phase 6 — Game Arcade (complete, all four games)
 
 What's built:
 
@@ -36,9 +36,15 @@ What's built:
     plausible and skip the ones that jump to an unwarranted conclusion. Full credit for a round
     means covering every reasonable option and none of the leaps — the skill tested is resisting
     a bad conclusion, not correctly diagnosing someone.
+  - **Detective** — logic-elimination mysteries (`src/data/games/detectiveMysteries.js`), not
+    scored prose. Built this way on purpose after Human Behavior's content shipped with three
+    separate accidental shortcuts (position, wording tone, then text length) before a real fix —
+    each clue eliminates specific suspects via explicit data, and the solution is whichever
+    suspect no clue eliminates: a mechanically checkable invariant (verified against every
+    mystery before shipping), the same class of guarantee as Pattern Logic's math, with no prose
+    "tell" surface to exploit at all.
   - `useGameSession` + `GameHeader`/`GameSummary` (`src/components/games/`) are the reusable
-    scoring/streak/XP/UI plumbing — Detective (still "Coming soon") plugs into the same pieces
-    instead of rebuilding them.
+    scoring/streak/XP/UI plumbing all four games share.
 - Progression system: overall level + per-domain knowledge levels, XP curve, Memory Tokens
 - Character foundation (silhouette, no cosmetics yet)
 - Firebase auth + Firestore persistence, with a **local-only fallback** (localStorage) so the app
@@ -105,6 +111,6 @@ cost, not just code. Jumped ahead to Phase 6 in the meantime since it needed nei
 3. Daily experience depth (AI-generated daily content) — **deferred, needs an AI provider decision**
 4. Live Challenges — custom challenge generation — **deferred, same reason**
 5. AI Brain — Claude-powered personalized learning — **deferred, same reason**
-6. ~~Game Arcade — a few polished games, not many shallow ones~~ (this phase — Pattern Logic
-   shipped; Human Behavior and Critical Thinking still to come)
-7. Progression — achievements, cosmetics, character growth
+6. ~~Game Arcade — a few polished games, not many shallow ones~~ (all four shipped: Pattern
+   Logic, Critical Thinking, Human Behavior, Detective)
+7. Progression — achievements, cosmetics, character growth (this phase, next)
