@@ -30,9 +30,15 @@ What's built:
   - **Critical Thinking** — hand-authored scenarios (`src/data/games/criticalThinkingScenarios.js`),
     spot the cognitive bias/logical fallacy in a real-world vignette. Ties back into the Knowledge
     Network: a "Connects to ⟨node⟩" link deep-links and auto-focuses the relevant node.
+  - **Human Behavior** — deliberately *not* a single-right-answer quiz (the spec is explicit:
+    never diagnose a person from one behavior, never normalize paranoid mind-reading as insight).
+    Multi-select instead: given a social scenario, pick every explanation that's genuinely
+    plausible and skip the ones that jump to an unwarranted conclusion. Full credit for a round
+    means covering every reasonable option and none of the leaps — the skill tested is resisting
+    a bad conclusion, not correctly diagnosing someone.
   - `useGameSession` + `GameHeader`/`GameSummary` (`src/components/games/`) are the reusable
-    scoring/streak/XP/UI plumbing — Human Behavior and Detective (still "Coming soon") plug into
-    the same pieces instead of rebuilding them.
+    scoring/streak/XP/UI plumbing — Detective (still "Coming soon") plugs into the same pieces
+    instead of rebuilding them.
 - Progression system: overall level + per-domain knowledge levels, XP curve, Memory Tokens
 - Character foundation (silhouette, no cosmetics yet)
 - Firebase auth + Firestore persistence, with a **local-only fallback** (localStorage) so the app

@@ -16,14 +16,15 @@ const LIVE_GAMES = [
     title: 'Critical Thinking',
     tagline: 'Spot the bias, the fallacy, the gap in the reasoning — real scenarios, not textbook definitions.',
   },
+  {
+    id: 'humanBehavior',
+    path: '/play/human-behavior',
+    title: 'Human Behavior',
+    tagline: 'Multiple explanations for one social situation — spot the reasonable ones, skip the leaps.',
+  },
 ];
 
 const COMING_SOON = [
-  {
-    id: 'human-behavior',
-    title: 'Human Behavior',
-    tagline: 'Analyze a social scenario — multiple explanations, not one diagnosis.',
-  },
   {
     id: 'detective',
     title: 'Detective',
