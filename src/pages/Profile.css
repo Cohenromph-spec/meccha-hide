@@ -47,9 +47,11 @@
 }
 
 .theme-swatch__preview {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
 
 .theme-swatch__name {

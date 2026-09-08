@@ -3,14 +3,17 @@ import { useUser } from '../context/UserContext.jsx';
 import { levelFromXp } from '../lib/progression.js';
 import { CATEGORIES } from '../lib/categories.js';
 import { challengesContent } from '../data/challengesContent.js';
-import { achievements } from '../data/achievements.js';
+import { achievementChains } from '../data/achievementChains.js';
+import { getAllChainProgress } from '../lib/achievements.js';
 import './Journey.css';
 
 const DOMAINS = ['ai', 'psychology', 'philosophy', 'world'];
 
 export default function Journey() {
   const { profile, title, levelInfo, logChallengeProgress } = useUser();
-  const unlockedCount = profile.unlockedAchievementIds.length;
+  const chainProgress = getAllChainProgress(profile);
+  const totalTiers = achievementChains.reduce((sum, c) => sum + c.tiers.length, 0);
+  const unlockedTiers = profile.unlockedAchievementIds.length;
 
   return (
     <div className="journey">
@@ -81,20 +84,40 @@ export default function Journey() {
         <div className="journey__achievements-head">
           <h3>Achievements</h3>
           <span className="journey__achievements-count">
-            {unlockedCount} / {achievements.length}
+            {unlockedTiers} / {totalTiers}
           </span>
         </div>
         <div className="journey__achievements">
-          {achievements.map((a) => {
-            const unlocked = profile.unlockedAchievementIds.includes(a.id);
+          {chainProgress.map((chain) => {
+            const mastered = !chain.activeTier;
+            const displayTier = chain.activeTier ?? chain.tiers[chain.tiers.length - 1];
+            const prevThreshold = mastered ? 0 : chain.tiers[chain.tiers.indexOf(displayTier) - 1]?.threshold ?? 0;
+            const span = Math.max(displayTier.threshold - prevThreshold, 1);
+            const progress = mastered ? 1 : Math.min(Math.max((chain.value - prevThreshold) / span, 0), 1);
+
             return (
-              <div key={a.id} className={`journey-achievement${unlocked ? ' journey-achievement--unlocked' : ''}`}>
-                <span className="journey-achievement__icon">{unlocked ? a.icon : '🔒'}</span>
+              <div key={chain.id} className={`journey-achievement${mastered ? ' journey-achievement--mastered' : ''}`}>
+                <span className="journey-achievement__icon">{chain.icon}</span>
                 <div className="journey-achievement__body">
-                  <div className="journey-achievement__title">{a.title}</div>
-                  <div className="journey-achievement__desc">{a.description}</div>
+                  <div className="journey-achievement__title-row">
+                    <span className="journey-achievement__title">{displayTier.title}</span>
+                    <span className="journey-achievement__pips">
+                      {chain.tiers.map((t) => (
+                        <span key={t.id} className={`journey-achievement__pip${t.unlocked ? ' journey-achievement__pip--filled' : ''}`} />
+                      ))}
+                    </span>
+                  </div>
+                  <div className="journey-achievement__desc">{displayTier.description}</div>
+                  <div className="journey-achievement__track">
+                    <div className="journey-achievement__fill" style={{ width: `${progress * 100}%` }} />
+                  </div>
+                  {!mastered && (
+                    <div className="journey-achievement__progress-label">
+                      {chain.value} / {displayTier.threshold}
+                    </div>
+                  )}
                 </div>
-                <span className="journey-achievement__reward">+{a.reward}</span>
+                <span className="journey-achievement__reward">{mastered ? '✓' : `+${displayTier.reward}`}</span>
               </div>
             );
           })}

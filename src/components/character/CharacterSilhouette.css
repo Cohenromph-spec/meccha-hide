@@ -1,7 +1,25 @@
+.nexus-character-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .nexus-character {
+  position: relative;
+  z-index: 1;
   opacity: 0.92;
 }
 
-.nexus-character--glow {
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--character-glow) 55%, transparent));
+/* A separate blurred layer behind the SVG, not a CSS filter on the SVG
+   itself — see the comment in CharacterSilhouette.jsx for why. Sized
+   larger than the character and centered, so the blur has room to
+   dissipate into a round glow instead of hitting an edge. */
+.nexus-character__glow {
+  position: absolute;
+  inset: -35%;
+  z-index: 0;
+  filter: blur(10px);
+  opacity: 0.65;
+  pointer-events: none;
 }

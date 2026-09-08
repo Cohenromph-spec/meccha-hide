@@ -91,10 +91,9 @@ function ThemePicker() {
             onClick={() => handlePick(theme)}
             disabled={busyId === theme.id || (!owned && !affordable)}
           >
-            <span
-              className="theme-swatch__preview"
-              style={{ background: `linear-gradient(135deg, ${theme.gradientFrom}, ${theme.gradientTo})` }}
-            />
+            <span className="theme-swatch__preview">
+              <CharacterSilhouette size={40} themeId={theme.id} glow />
+            </span>
             <span className="theme-swatch__name">{theme.name}</span>
             <span className="theme-swatch__status">
               {equipped ? 'Equipped' : owned ? 'Equip' : `${theme.cost} tokens`}

@@ -5,8 +5,15 @@
  * artist or an AI image call to exist. Purely a Memory Token sink, never
  * required for content, per the original ComingSoon copy.
  *
- * `default` is always unlocked and free — everyone starts here, matching
- * the silhouette's original fixed brand-blue gradient.
+ * `default` is always unlocked and free — everyone starts here.
+ *
+ * Colors were flat/dull in the first pass (Cohen's feedback) — repicked
+ * for more saturation and contrast against the dark background, not just
+ * "a gradient between two hues." `void` additionally gets `glass: true`:
+ * an actual translucent-glass treatment (semi-opaque fill so the ambient
+ * background shows through, a light edge stroke, a diagonal specular
+ * highlight) rendered specially in CharacterSilhouette.jsx — "Voidglass"
+ * should look like glass, not like a plain gray recolor.
  */
 export const cosmeticThemes = [
   {
@@ -21,41 +28,42 @@ export const cosmeticThemes = [
     id: 'ember',
     name: 'Ember',
     cost: 30,
-    gradientFrom: '#ff8a4c',
-    gradientTo: '#ff4d6d',
-    glow: '#ff8a4c',
+    gradientFrom: '#ffb347',
+    gradientTo: '#ff3d5a',
+    glow: '#ff5a3c',
   },
   {
     id: 'verdant',
     name: 'Verdant',
     cost: 30,
-    gradientFrom: '#4ade80',
-    gradientTo: '#16a34a',
-    glow: '#4ade80',
+    gradientFrom: '#8bffb0',
+    gradientTo: '#0ea85f',
+    glow: '#2be88a',
   },
   {
     id: 'violet',
     name: 'Violet Echo',
     cost: 50,
-    gradientFrom: '#a78bfa',
-    gradientTo: '#7c3aed',
-    glow: '#a78bfa',
+    gradientFrom: '#c4a5ff',
+    gradientTo: '#6d28d9',
+    glow: '#a855f7',
   },
   {
     id: 'gold',
     name: 'Gilded',
     cost: 75,
-    gradientFrom: '#fbbf24',
-    gradientTo: '#d97706',
-    glow: '#fbbf24',
+    gradientFrom: '#ffe28a',
+    gradientTo: '#c8790a',
+    glow: '#ffb020',
   },
   {
     id: 'void',
     name: 'Voidglass',
     cost: 100,
-    gradientFrom: '#e2e8f0',
-    gradientTo: '#475569',
-    glow: '#e2e8f0',
+    gradientFrom: '#eef4ff',
+    gradientTo: '#7c8bab',
+    glow: '#bcd4ff',
+    glass: true,
   },
 ];
 
