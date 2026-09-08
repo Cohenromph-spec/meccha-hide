@@ -1,16 +1,16 @@
 import { useRef, useState } from 'react';
 import { detectiveMysteries } from '../../data/games/detectiveMysteries.js';
 import { createScenarioDeck, shuffleOptions } from '../../lib/games/scenarioPicker.js';
+import { pickTier } from '../../lib/games/tierGate.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import GameHeader from '../../components/games/GameHeader.jsx';
 import GameSummary from '../../components/games/GameSummary.jsx';
+import TierBadge from '../../components/games/TierBadge.jsx';
 import './DetectiveGame.css';
 
 const EASY = detectiveMysteries.filter((m) => m.tier === 'easy');
 const MEDIUM = detectiveMysteries.filter((m) => m.tier === 'medium');
 const HARD = detectiveMysteries.filter((m) => m.tier === 'hard');
-
-const TIER_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 
 /** Which clue (if any) eliminates this suspect — `eliminates` may be one name or several. */
 function eliminatingClue(mystery, name) {
@@ -29,10 +29,7 @@ export default function DetectiveGame() {
   });
 
   function newRound(currentStreak) {
-    const tiers = ['easy'];
-    if (currentStreak >= 3) tiers.push('medium');
-    if (currentStreak >= 8) tiers.push('hard');
-    const tier = tiers[Math.floor(Math.random() * tiers.length)];
+    const tier = pickTier(currentStreak);
     const mystery = decksRef.current[tier]();
     return { mystery, suspects: shuffleOptions(mystery.suspects) };
   }
@@ -78,7 +75,7 @@ export default function DetectiveGame() {
 
       <div className="detective-game__title-row">
         <h2 className="detective-game__title">Who did it?</h2>
-        <span className={`detective-game__tier detective-game__tier--${mystery.tier}`}>{TIER_LABEL[mystery.tier]}</span>
+        <TierBadge tier={mystery.tier} />
       </div>
 
       <div className="detective-game__scenario">{mystery.scenario}</div>

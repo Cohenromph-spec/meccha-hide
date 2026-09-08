@@ -21,28 +21,43 @@ What's built:
   prerequisites. Edges carry a traveling "signal" pulse (SVG animateMotion) once either endpoint
   is reachable — dormant/active/lit states, not one uniform animation. "Continue Exploring" tiles
   deep-link into the graph (`?domain=`) and auto-pan/open that domain's root node.
-- **Game Arcade** (`src/pages/games/`, `src/hooks/useGameSession.js`): two games live.
+- **Game Arcade** (`src/pages/games/`, `src/hooks/useGameSession.js`): four games, all with real
+  streak-gated difficulty (medium unlocks at streak ≥3, hard at streak ≥8 — shared thresholds via
+  `src/lib/games/tierGate.js`, badge shown via `src/components/games/TierBadge.jsx`). Difficulty
+  scaling was added as a second pass once flat content banks got boring past a few rounds — every
+  tier is genuinely harder content, never the same pool re-gated behind a streak requirement.
   - **Pattern Logic** — procedurally-generated sequence/deduction (numeric + shape patterns,
-    difficulty scales with streak). Every generator's answer is verified against its actual
-    mathematical rule (not just "present among the options") in `/tmp`-style throwaway test
-    scripts before each ship — that distinction mattered: an early version had a generator whose
-    "next operation" formula was a disguised constant, silently wrong 100% of the time.
+    difficulty scales via generator pools per tier). Every generator's answer is verified against
+    its actual mathematical rule (not just "present among the options") in throwaway test scripts
+    before each ship — that distinction mattered: an early version had a generator whose "next
+    operation" formula was a disguised constant, silently wrong 100% of the time.
   - **Critical Thinking** — hand-authored scenarios (`src/data/games/criticalThinkingScenarios.js`),
     spot the cognitive bias/logical fallacy in a real-world vignette. Ties back into the Knowledge
-    Network: a "Connects to ⟨node⟩" link deep-links and auto-focuses the relevant node.
+    Network: a "Connects to ⟨node⟩" link deep-links and auto-focuses the relevant node. Easy tier
+    distractors are clearly different from the correct flaw; medium adds one genuinely-confusable
+    "near-miss" distractor (e.g. Confirmation Bias vs. Availability Heuristic); hard uses two at
+    once (5 options), each refuted by name in the explanation — never left as an unresolved
+    judgment call.
   - **Human Behavior** — deliberately *not* a single-right-answer quiz (the spec is explicit:
     never diagnose a person from one behavior, never normalize paranoid mind-reading as insight).
     Multi-select instead: given a social scenario, pick every explanation that's genuinely
     plausible and skip the ones that jump to an unwarranted conclusion. Full credit for a round
-    means covering every reasonable option and none of the leaps — the skill tested is resisting
-    a bad conclusion, not correctly diagnosing someone.
+    means covering every reasonable option and none of the leaps. Easy is 5 options (3
+    reasonable/2 overreach); medium is 6 (3/3, more to weigh); hard is also 6 but the overreach
+    options are quieter — confident specifics instead of dramatic claims, a genuinely harder read.
+    Every new tier went through the same length/wording adversarial check the original content
+    got burned by twice (see below) before shipping — the first draft of the new tiers
+    reintroduced the hedge-word tell almost exactly, caught before it shipped, not after.
   - **Detective** — logic-elimination mysteries (`src/data/games/detectiveMysteries.js`), not
     scored prose. Built this way on purpose after Human Behavior's content shipped with three
     separate accidental shortcuts (position, wording tone, then text length) before a real fix —
     each clue eliminates specific suspects via explicit data, and the solution is whichever
     suspect no clue eliminates: a mechanically checkable invariant (verified against every
     mystery before shipping), the same class of guarantee as Pattern Logic's math, with no prose
-    "tell" surface to exploit at all.
+    "tell" surface to exploit at all. Medium adds more suspects/clues (same reasoning, more to
+    track); hard introduces compound clues (`eliminates` as an array) that rule out multiple
+    suspects from one two-part condition — a genuinely new reasoning demand, not just more of
+    the same.
   - `useGameSession` + `GameHeader`/`GameSummary` (`src/components/games/`) are the reusable
     scoring/streak/XP/UI plumbing all four games share.
 - Progression system: overall level + per-domain knowledge levels, XP curve, Memory Tokens

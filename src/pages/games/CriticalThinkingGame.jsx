@@ -3,20 +3,32 @@ import { Link } from 'react-router-dom';
 import { criticalThinkingScenarios } from '../../data/games/criticalThinkingScenarios.js';
 import { knowledgeNodes } from '../../data/knowledgeNodes.js';
 import { createScenarioDeck, shuffleOptions } from '../../lib/games/scenarioPicker.js';
+import { pickTier } from '../../lib/games/tierGate.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import GameHeader from '../../components/games/GameHeader.jsx';
 import GameSummary from '../../components/games/GameSummary.jsx';
+import TierBadge from '../../components/games/TierBadge.jsx';
 import './CriticalThinkingGame.css';
 
-function newRound(draw) {
-  const scenario = draw();
-  return { scenario, options: shuffleOptions([scenario.flaw, ...scenario.distractors]) };
-}
+const EASY = criticalThinkingScenarios.filter((s) => s.tier === 'easy');
+const MEDIUM = criticalThinkingScenarios.filter((s) => s.tier === 'medium');
+const HARD = criticalThinkingScenarios.filter((s) => s.tier === 'hard');
 
 export default function CriticalThinkingGame() {
   const { streak, bestStreak, totalCorrect, totalPlayed, submitAnswer } = useGameSession('criticalThinking');
-  const deckRef = useRef(createScenarioDeck(criticalThinkingScenarios));
-  const [round, setRound] = useState(() => newRound(deckRef.current));
+  const decksRef = useRef({
+    easy: createScenarioDeck(EASY),
+    medium: createScenarioDeck(MEDIUM),
+    hard: createScenarioDeck(HARD),
+  });
+
+  function newRound(currentStreak) {
+    const tier = pickTier(currentStreak);
+    const scenario = decksRef.current[tier]();
+    return { scenario, options: shuffleOptions([scenario.flaw, ...scenario.distractors]) };
+  }
+
+  const [round, setRound] = useState(() => newRound(0));
   const [picked, setPicked] = useState(null);
   const [ended, setEnded] = useState(false);
 
@@ -29,9 +41,9 @@ export default function CriticalThinkingGame() {
     submitAnswer(option === scenario.flaw);
   }
 
-  function nextRound() {
+  function nextRound(currentStreak) {
     setPicked(null);
-    setRound(newRound(deckRef.current));
+    setRound(newRound(currentStreak));
   }
 
   if (ended) {
@@ -45,7 +57,7 @@ export default function CriticalThinkingGame() {
           ]}
           onPlayAgain={() => {
             setEnded(false);
-            nextRound();
+            nextRound(0);
           }}
         />
       </div>
@@ -56,7 +68,10 @@ export default function CriticalThinkingGame() {
     <div className="ct-game">
       <GameHeader streak={streak} best={bestStreak} />
 
-      <h2 className="ct-game__title">What's the flaw in this reasoning?</h2>
+      <div className="ct-game__title-row">
+        <h2 className="ct-game__title">What's the flaw in this reasoning?</h2>
+        <TierBadge tier={scenario.tier} />
+      </div>
 
       <div className="ct-game__scenario">{scenario.scenario}</div>
 
@@ -91,7 +106,7 @@ export default function CriticalThinkingGame() {
               Connects to {relatedNode.title} in your Knowledge Network →
             </Link>
           )}
-          <button className="ct-game__next" onClick={nextRound}>
+          <button className="ct-game__next" onClick={() => nextRound(streak)}>
             Next →
           </button>
           <button className="ct-game__end" onClick={() => setEnded(true)}>

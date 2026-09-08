@@ -1,24 +1,36 @@
 import { useRef, useState } from 'react';
 import { humanBehaviorScenarios } from '../../data/games/humanBehaviorScenarios.js';
 import { createScenarioDeck, shuffleOptions } from '../../lib/games/scenarioPicker.js';
+import { pickTier } from '../../lib/games/tierGate.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import GameHeader from '../../components/games/GameHeader.jsx';
 import GameSummary from '../../components/games/GameSummary.jsx';
+import TierBadge from '../../components/games/TierBadge.jsx';
 import './HumanBehaviorGame.css';
 
-function newRound(draw) {
-  const scenario = draw();
-  // Shuffle display order — the data always lists reasonable explanations
-  // before the leaps, for readability while authoring. Without shuffling,
-  // the game is solvable by position alone ("the top ones are always
-  // right") without reading a single scenario, which defeats the point.
-  return { scenario, explanations: shuffleOptions(scenario.explanations) };
-}
+const EASY = humanBehaviorScenarios.filter((s) => s.tier === 'easy');
+const MEDIUM = humanBehaviorScenarios.filter((s) => s.tier === 'medium');
+const HARD = humanBehaviorScenarios.filter((s) => s.tier === 'hard');
 
 export default function HumanBehaviorGame() {
   const { streak, bestStreak, totalCorrect, totalPlayed, submitAnswer } = useGameSession('humanBehavior');
-  const deckRef = useRef(createScenarioDeck(humanBehaviorScenarios));
-  const [round, setRound] = useState(() => newRound(deckRef.current));
+  const decksRef = useRef({
+    easy: createScenarioDeck(EASY),
+    medium: createScenarioDeck(MEDIUM),
+    hard: createScenarioDeck(HARD),
+  });
+
+  function newRound(currentStreak) {
+    const tier = pickTier(currentStreak);
+    const scenario = decksRef.current[tier]();
+    // Shuffle display order — the data always lists reasonable explanations
+    // before the leaps, for readability while authoring. Without shuffling,
+    // the game is solvable by position alone ("the top ones are always
+    // right") without reading a single scenario, which defeats the point.
+    return { scenario, explanations: shuffleOptions(scenario.explanations) };
+  }
+
+  const [round, setRound] = useState(() => newRound(0));
   const [selected, setSelected] = useState(new Set());
   const [revealed, setRevealed] = useState(false);
   const [ended, setEnded] = useState(false);
@@ -50,8 +62,8 @@ export default function HumanBehaviorGame() {
     setRevealed(true);
   }
 
-  function nextRound() {
-    setRound(newRound(deckRef.current));
+  function nextRound(currentStreak) {
+    setRound(newRound(currentStreak));
     setSelected(new Set());
     setRevealed(false);
   }
@@ -67,7 +79,7 @@ export default function HumanBehaviorGame() {
           ]}
           onPlayAgain={() => {
             setEnded(false);
-            nextRound();
+            nextRound(0);
           }}
         />
       </div>
@@ -78,7 +90,10 @@ export default function HumanBehaviorGame() {
     <div className="hb-game">
       <GameHeader streak={streak} best={bestStreak} />
 
-      <h2 className="hb-game__title">Which explanations are actually reasonable?</h2>
+      <div className="hb-game__title-row">
+        <h2 className="hb-game__title">Which explanations are actually reasonable?</h2>
+        <TierBadge tier={scenario.tier} />
+      </div>
       <p className="hb-game__subtitle">
         Select every possibility that's genuinely plausible. Skip the ones that jump to a conclusion the
         situation doesn't actually support.
@@ -129,7 +144,7 @@ export default function HumanBehaviorGame() {
         </button>
       ) : (
         <div className="hb-game__feedback">
-          <button className="hb-game__next" onClick={nextRound}>
+          <button className="hb-game__next" onClick={() => nextRound(streak)}>
             Next →
           </button>
           <button className="hb-game__end" onClick={() => setEnded(true)}>

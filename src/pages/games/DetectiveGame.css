@@ -16,30 +16,6 @@
   color: var(--text-secondary);
 }
 
-.detective-game__tier {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 999px;
-}
-
-.detective-game__tier--easy {
-  color: var(--success);
-  background: color-mix(in srgb, var(--success) 16%, transparent);
-}
-
-.detective-game__tier--medium {
-  color: var(--warning);
-  background: color-mix(in srgb, var(--warning) 16%, transparent);
-}
-
-.detective-game__tier--hard {
-  color: var(--danger);
-  background: color-mix(in srgb, var(--danger) 16%, transparent);
-}
-
 .detective-game__scenario {
   background: var(--bg-elevated);
   border: 1px solid var(--border-soft);

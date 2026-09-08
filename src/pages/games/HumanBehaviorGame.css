@@ -3,11 +3,17 @@
   margin: 0 auto;
 }
 
+.hb-game__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
 .hb-game__title {
-  text-align: center;
   font-size: 18px;
   color: var(--text-primary);
-  margin-bottom: var(--space-2);
 }
 
 .hb-game__subtitle {
