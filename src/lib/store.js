@@ -34,6 +34,9 @@ export const DEFAULT_PROFILE = {
   challengeProgress: {},
   gameStats: {},
   dailyPuzzle: { date: null, correct: null, streak: 0 },
+  unlockedAchievementIds: [],
+  unlockedThemeIds: ['default'],
+  equippedThemeId: 'default',
   createdAt: null,
 };
 
@@ -168,4 +171,42 @@ export async function recordGameRound(uid, gameId, { correct, streak }) {
     bestStreak: Math.max(existing.bestStreak, streak),
   };
   await updateProfile(uid, { gameStats: { ...current.gameStats, [gameId]: next } });
+}
+
+/**
+ * Mark achievements unlocked and award their tokens — re-reads the
+ * profile fresh and dedupes against it (not the possibly-stale value the
+ * caller computed `newlyUnlocked` from) so this is safe to call more than
+ * once with an overlapping list without double-paying.
+ */
+export async function unlockAchievements(uid, newlyUnlocked) {
+  if (newlyUnlocked.length === 0) return;
+  const current = await getProfile(uid);
+  const already = new Set(current.unlockedAchievementIds ?? []);
+  const trulyNew = newlyUnlocked.filter((a) => !already.has(a.id));
+  if (trulyNew.length === 0) return;
+  const reward = trulyNew.reduce((sum, a) => sum + a.reward, 0);
+  await updateProfile(uid, {
+    unlockedAchievementIds: [...current.unlockedAchievementIds, ...trulyNew.map((a) => a.id)],
+    memoryTokens: current.memoryTokens + reward,
+  });
+}
+
+/** Spend Memory Tokens to unlock a cosmetic theme. Returns false if already owned or unaffordable. */
+export async function purchaseTheme(uid, themeId, cost) {
+  const current = await getProfile(uid);
+  if (current.unlockedThemeIds.includes(themeId)) return false;
+  if (current.memoryTokens < cost) return false;
+  await updateProfile(uid, {
+    unlockedThemeIds: [...current.unlockedThemeIds, themeId],
+    memoryTokens: current.memoryTokens - cost,
+  });
+  return true;
+}
+
+/** Equip an already-unlocked cosmetic theme. No-op if it isn't owned. */
+export async function equipTheme(uid, themeId) {
+  const current = await getProfile(uid);
+  if (!current.unlockedThemeIds.includes(themeId)) return;
+  await updateProfile(uid, { equippedThemeId: themeId });
 }

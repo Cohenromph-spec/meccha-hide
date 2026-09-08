@@ -7,7 +7,7 @@ project's master spec (kept in the owner's planning docs, not in this repo).
 This repo previously hosted "Meccha Hide" (a geocaching hobby app). That project is retired —
 Nexus is a fresh build in the same repo.
 
-## Status: Phase 6 — Game Arcade (complete, all four games)
+## Status: Phase 7 — Progression (achievements + cosmetics shipped)
 
 What's built:
 
@@ -61,13 +61,24 @@ What's built:
   - `useGameSession` + `GameHeader`/`GameSummary` (`src/components/games/`) are the reusable
     scoring/streak/XP/UI plumbing all four games share.
 - Progression system: overall level + per-domain knowledge levels, XP curve, Memory Tokens
-- Character foundation (silhouette, no cosmetics yet)
+- **Achievements** (`src/data/achievements.js`, `src/lib/achievements.js`): 22 milestones, every
+  condition a pure function of stats the app already tracks (nodes explored, discoveries saved,
+  reflections written, challenges completed, game streaks, daily puzzle streak, domain/overall
+  level) — nothing invented just to have something to unlock. Checked centrally on every profile
+  change (`UserContext`), not scattered across every action that might matter, so a new stat can't
+  silently miss triggering its achievement. `unlockAchievements` re-dedupes against the freshest
+  stored profile before writing, so it can't double-award even though the check re-runs after its
+  own write. Live on the Journey page.
+- **Character cosmetics** (`src/data/cosmeticThemes.js`): 6 recolor themes for the character
+  silhouette (a gradient + glow swap, not new art — no asset pipeline needed), purchasable with
+  Memory Tokens on the Profile page, purely a token sink, never required for content.
 - Firebase auth + Firestore persistence, with a **local-only fallback** (localStorage) so the app
   is fully usable before any Firebase project is wired up — including live UI updates in that
   mode (see `localListeners` in `src/lib/store.js`), not just after a manual reload.
 
-Explicitly **not** built yet (see roadmap below): AI integration of any kind (daily content is
-still hand-authored), custom challenge generation, achievements, and character cosmetics.
+Explicitly **not** built yet (see roadmap below): the rest of Phase 3-5 — most daily content is
+still hand-authored (one AI-generated discovery card is live, see Phase 3 below) and custom
+challenge generation doesn't exist yet.
 
 ## Stack
 
@@ -139,4 +150,6 @@ require the account owner's billing, so they're manual steps, not something comm
 5. AI Brain — Claude-powered personalized learning — **deferred**, same proxy, not built yet
 6. ~~Game Arcade — a few polished games, not many shallow ones~~ (all four shipped: Pattern
    Logic, Critical Thinking, Human Behavior, Detective — all four now with real difficulty tiers)
-7. Progression — achievements, cosmetics, character growth — not started
+7. ~~Progression — achievements, cosmetics~~ (22 achievements + 6 cosmetic themes shipped;
+   "character growth" beyond recolor themes — actual new silhouette shapes/accessories — would
+   need real art and is not planned)

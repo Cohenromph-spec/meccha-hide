@@ -10,7 +10,7 @@ export default function UserHeader() {
 
   return (
     <header className="user-header">
-      <CharacterSilhouette size={56} glow />
+      <CharacterSilhouette size={56} glow themeId={profile.equippedThemeId} />
 
       <div className="user-header__identity">
         <div className="user-header__name-row">

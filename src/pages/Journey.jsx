@@ -1,15 +1,16 @@
 import PageHeader from '../components/common/PageHeader.jsx';
-import ComingSoon from '../components/common/ComingSoon.jsx';
 import { useUser } from '../context/UserContext.jsx';
 import { levelFromXp } from '../lib/progression.js';
 import { CATEGORIES } from '../lib/categories.js';
 import { challengesContent } from '../data/challengesContent.js';
+import { achievements } from '../data/achievements.js';
 import './Journey.css';
 
 const DOMAINS = ['ai', 'psychology', 'philosophy', 'world'];
 
 export default function Journey() {
   const { profile, title, levelInfo, logChallengeProgress } = useUser();
+  const unlockedCount = profile.unlockedAchievementIds.length;
 
   return (
     <div className="journey">
@@ -77,12 +78,27 @@ export default function Journey() {
       </section>
 
       <section className="journey__section">
-        <h3>Achievements</h3>
-        <ComingSoon
-          phase="Phase 7"
-          title="Achievements & Cosmetics"
-          description="Meaningful milestones — Deep Thinker, The Observer, AI Explorer — unlocking character cosmetics via Memory Tokens."
-        />
+        <div className="journey__achievements-head">
+          <h3>Achievements</h3>
+          <span className="journey__achievements-count">
+            {unlockedCount} / {achievements.length}
+          </span>
+        </div>
+        <div className="journey__achievements">
+          {achievements.map((a) => {
+            const unlocked = profile.unlockedAchievementIds.includes(a.id);
+            return (
+              <div key={a.id} className={`journey-achievement${unlocked ? ' journey-achievement--unlocked' : ''}`}>
+                <span className="journey-achievement__icon">{unlocked ? a.icon : '🔒'}</span>
+                <div className="journey-achievement__body">
+                  <div className="journey-achievement__title">{a.title}</div>
+                  <div className="journey-achievement__desc">{a.description}</div>
+                </div>
+                <span className="journey-achievement__reward">+{a.reward}</span>
+              </div>
+            );
+          })}
+        </div>
       </section>
     </div>
   );

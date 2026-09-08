@@ -12,10 +12,14 @@ import {
   completeChallenge,
   recordGameRound,
   completeDailyPuzzle,
+  unlockAchievements,
+  purchaseTheme,
+  equipTheme,
 } from '../lib/store';
 import { levelFromXp, titleForLevel, XP_AWARDS } from '../lib/progression';
 import { firebaseReady } from '../lib/firebase';
 import { todayStr } from '../lib/date';
+import { getNewlyUnlocked } from '../lib/achievements';
 
 const UserContext = createContext(null);
 
@@ -31,6 +35,20 @@ export function UserProvider({ children }) {
     const unsubscribe = subscribeProfile(uid, setProfile);
     return unsubscribe;
   }, [uid]);
+
+  // Re-checked on every profile change, not on a specific action — an
+  // achievement can become true from any stat (XP, a saved discovery, a
+  // game streak, ...), so one central check is simpler and can't miss a
+  // trigger point the way "call checkAchievements() after every action
+  // that might matter" inevitably would. unlockAchievements re-dedupes
+  // against the freshest profile itself, so this can't double-award even
+  // though it fires again after its own write updates `profile`.
+  useEffect(() => {
+    const newlyUnlocked = getNewlyUnlocked(profile);
+    if (newlyUnlocked.length > 0) {
+      unlockAchievements(uid, newlyUnlocked);
+    }
+  }, [uid, profile]);
 
   const gainXp = useCallback(
     (amount, domain) => awardXp(uid, amount, domain),
@@ -102,6 +120,9 @@ export function UserProvider({ children }) {
     [uid, dailyPuzzleDoneToday, gainXp, gainTokens]
   );
 
+  const buyTheme = useCallback((themeId, cost) => purchaseTheme(uid, themeId, cost), [uid]);
+  const wearTheme = useCallback((themeId) => equipTheme(uid, themeId), [uid]);
+
   const levelInfo = useMemo(() => levelFromXp(profile.xp), [profile.xp]);
   const title = useMemo(() => titleForLevel(levelInfo.level), [levelInfo.level]);
 
@@ -124,6 +145,8 @@ export function UserProvider({ children }) {
       recordGameResult,
       dailyPuzzleDoneToday,
       finishDailyPuzzle,
+      buyTheme,
+      wearTheme,
     }),
     [
       authUser,
@@ -141,6 +164,8 @@ export function UserProvider({ children }) {
       recordGameResult,
       dailyPuzzleDoneToday,
       finishDailyPuzzle,
+      buyTheme,
+      wearTheme,
     ]
   );
 

@@ -3,5 +3,5 @@
 }
 
 .nexus-character--glow {
-  filter: drop-shadow(0 0 14px var(--brand-glow));
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--character-glow) 55%, transparent));
 }
