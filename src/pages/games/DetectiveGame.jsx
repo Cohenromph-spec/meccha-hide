@@ -6,20 +6,38 @@ import GameHeader from '../../components/games/GameHeader.jsx';
 import GameSummary from '../../components/games/GameSummary.jsx';
 import './DetectiveGame.css';
 
-function newRound(draw) {
-  const mystery = draw();
-  return { mystery, suspects: shuffleOptions(mystery.suspects) };
-}
+const EASY = detectiveMysteries.filter((m) => m.tier === 'easy');
+const MEDIUM = detectiveMysteries.filter((m) => m.tier === 'medium');
+const HARD = detectiveMysteries.filter((m) => m.tier === 'hard');
 
-/** Which clue (if any) eliminates this suspect. */
+const TIER_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+
+/** Which clue (if any) eliminates this suspect — `eliminates` may be one name or several. */
 function eliminatingClue(mystery, name) {
-  return mystery.clues.find((c) => c.eliminates === name) ?? null;
+  return mystery.clues.find((c) => (Array.isArray(c.eliminates) ? c.eliminates.includes(name) : c.eliminates === name)) ?? null;
 }
 
 export default function DetectiveGame() {
   const { streak, bestStreak, totalCorrect, totalPlayed, submitAnswer } = useGameSession('detective');
-  const deckRef = useRef(createScenarioDeck(detectiveMysteries));
-  const [round, setRound] = useState(() => newRound(deckRef.current));
+  // One shuffle-bag per tier — a growing/shrinking eligible pool (as streak
+  // rises) doesn't work with a single deck across all mysteries, since
+  // medium/hard shouldn't surface at all until the streak earns them.
+  const decksRef = useRef({
+    easy: createScenarioDeck(EASY),
+    medium: createScenarioDeck(MEDIUM),
+    hard: createScenarioDeck(HARD),
+  });
+
+  function newRound(currentStreak) {
+    const tiers = ['easy'];
+    if (currentStreak >= 3) tiers.push('medium');
+    if (currentStreak >= 8) tiers.push('hard');
+    const tier = tiers[Math.floor(Math.random() * tiers.length)];
+    const mystery = decksRef.current[tier]();
+    return { mystery, suspects: shuffleOptions(mystery.suspects) };
+  }
+
+  const [round, setRound] = useState(() => newRound(0));
   const [picked, setPicked] = useState(null);
   const [ended, setEnded] = useState(false);
 
@@ -31,9 +49,9 @@ export default function DetectiveGame() {
     submitAnswer(name === mystery.solution);
   }
 
-  function nextRound() {
+  function nextRound(currentStreak) {
     setPicked(null);
-    setRound(newRound(deckRef.current));
+    setRound(newRound(currentStreak));
   }
 
   if (ended) {
@@ -47,7 +65,7 @@ export default function DetectiveGame() {
           ]}
           onPlayAgain={() => {
             setEnded(false);
-            nextRound();
+            nextRound(0);
           }}
         />
       </div>
@@ -58,7 +76,10 @@ export default function DetectiveGame() {
     <div className="detective-game">
       <GameHeader streak={streak} best={bestStreak} />
 
-      <h2 className="detective-game__title">Who did it?</h2>
+      <div className="detective-game__title-row">
+        <h2 className="detective-game__title">Who did it?</h2>
+        <span className={`detective-game__tier detective-game__tier--${mystery.tier}`}>{TIER_LABEL[mystery.tier]}</span>
+      </div>
 
       <div className="detective-game__scenario">{mystery.scenario}</div>
 
@@ -103,7 +124,7 @@ export default function DetectiveGame() {
       {picked !== null && (
         <div className="detective-game__feedback">
           <p>{picked === mystery.solution ? `Solved it — ${mystery.solution} did it.` : `Not quite — it was ${mystery.solution}.`}</p>
-          <button className="detective-game__next" onClick={nextRound}>
+          <button className="detective-game__next" onClick={() => nextRound(streak)}>
             Next Case →
           </button>
           <button className="detective-game__end" onClick={() => setEnded(true)}>
