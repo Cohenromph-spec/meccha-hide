@@ -1,5 +1,6 @@
 import { doc, getDoc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, firebaseReady } from './firebase';
+import { todayStr } from './date';
 
 /**
  * Persistence layer for a Nexus user profile.
@@ -32,6 +33,7 @@ export const DEFAULT_PROFILE = {
   reflections: [],
   challengeProgress: {},
   gameStats: {},
+  dailyPuzzle: { date: null, correct: null, streak: 0 },
   createdAt: null,
 };
 
@@ -140,6 +142,20 @@ export async function completeChallenge(uid, challengeId) {
       [challengeId]: { ...existing, completedAt: new Date().toISOString() },
     },
   });
+}
+
+/** Record today's Daily Puzzle result — one attempt per calendar day. */
+export async function completeDailyPuzzle(uid, correct) {
+  const current = await getProfile(uid);
+  const today = todayStr();
+  const prev = current.dailyPuzzle;
+  let streak = 1;
+  if (prev.date) {
+    const diffDays = Math.round((new Date(today) - new Date(prev.date)) / 86_400_000);
+    if (diffDays === 1) streak = (prev.streak || 0) + 1;
+    else if (diffDays === 0) streak = prev.streak || 1;
+  }
+  await updateProfile(uid, { dailyPuzzle: { date: today, correct, streak } });
 }
 
 /** Record one round of a game (correct/incorrect + the streak reached). */

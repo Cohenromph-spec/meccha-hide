@@ -6,16 +6,22 @@
  * Difficulty is derived from the player's current streak: a few easy
  * generators at low streaks, the harder/trickier ones mixed in as the
  * streak grows.
+ *
+ * Every randomness call takes an `rng` function (defaulting to
+ * Math.random) instead of calling Math.random() directly, so the same
+ * generator can be driven by a seeded RNG for the Daily Puzzle — same
+ * puzzle for everyone on the same calendar day — without needing a
+ * separate code path.
  */
 
-function randInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function randInt(min, max, rng = Math.random) {
+  return Math.floor(rng() * (max - min + 1)) + min;
 }
 
-function shuffle(arr) {
+function shuffle(arr, rng = Math.random) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rng() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
@@ -44,47 +50,47 @@ function numericDistractors(answer, spread) {
   return [...set];
 }
 
-function toOptions(answer, distractorPool) {
-  const options = shuffle(numericDistractors(answer, distractorPool).slice(0, 4));
+function toOptions(answer, distractorPool, rng = Math.random) {
+  const options = shuffle(numericDistractors(answer, distractorPool).slice(0, 4), rng);
   // Guarantee the real answer made it in even if dedup trimmed it.
-  if (!options.includes(answer)) options[randInt(0, 3)] = answer;
+  if (!options.includes(answer)) options[randInt(0, 3, rng)] = answer;
   return options;
 }
 
 // ---- Numeric generators ----
 
-function arithmetic() {
-  const step = randInt(2, 9);
-  const start = randInt(1, 20);
+function arithmetic(rng = Math.random) {
+  const step = randInt(2, 9, rng);
+  const start = randInt(1, 20, rng);
   const seq = [0, 1, 2, 3].map((i) => start + i * step);
   const answer = start + 4 * step;
   return {
     kind: 'number',
     sequence: seq,
     answer,
-    options: toOptions(answer, step),
+    options: toOptions(answer, step, rng),
     explanation: `Each term adds ${step}.`,
   };
 }
 
-function geometric() {
-  const ratio = randInt(2, 3);
-  const start = randInt(1, 5);
+function geometric(rng = Math.random) {
+  const ratio = randInt(2, 3, rng);
+  const start = randInt(1, 5, rng);
   const seq = [0, 1, 2, 3].map((i) => start * ratio ** i);
   const answer = start * ratio ** 4;
   return {
     kind: 'number',
     sequence: seq,
     answer,
-    options: toOptions(answer, Math.max(2, Math.round(answer * 0.3))),
+    options: toOptions(answer, Math.max(2, Math.round(answer * 0.3)), rng),
     explanation: `Each term multiplies by ${ratio}.`,
   };
 }
 
-function alternating() {
-  const add = randInt(3, 10);
-  const sub = randInt(1, add - 1);
-  const start = randInt(5, 25);
+function alternating(rng = Math.random) {
+  const add = randInt(3, 10, rng);
+  const sub = randInt(1, add - 1, rng);
+  const start = randInt(5, 25, rng);
   const seq = [start];
   for (let i = 0; i < 3; i += 1) {
     seq.push(seq[seq.length - 1] + (i % 2 === 0 ? add : -sub));
@@ -98,14 +104,14 @@ function alternating() {
     kind: 'number',
     sequence: seq,
     answer,
-    options: toOptions(answer, add),
+    options: toOptions(answer, add, rng),
     explanation: `The pattern alternates +${add}, -${sub}.`,
   };
 }
 
-function fibonacciLike() {
-  const a0 = randInt(1, 5);
-  const a1 = randInt(1, 5);
+function fibonacciLike(rng = Math.random) {
+  const a0 = randInt(1, 5, rng);
+  const a1 = randInt(1, 5, rng);
   const seq = [a0, a1];
   for (let i = 0; i < 2; i += 1) seq.push(seq[seq.length - 1] + seq[seq.length - 2]);
   const answer = seq[seq.length - 1] + seq[seq.length - 2];
@@ -113,20 +119,20 @@ function fibonacciLike() {
     kind: 'number',
     sequence: seq,
     answer,
-    options: toOptions(answer, Math.max(2, Math.round(answer * 0.25))),
+    options: toOptions(answer, Math.max(2, Math.round(answer * 0.25)), rng),
     explanation: 'Each term is the sum of the two before it.',
   };
 }
 
-function squares() {
-  const start = randInt(1, 4);
+function squares(rng = Math.random) {
+  const start = randInt(1, 4, rng);
   const seq = [0, 1, 2, 3].map((i) => (start + i) ** 2);
   const answer = (start + 4) ** 2;
   return {
     kind: 'number',
     sequence: seq,
     answer,
-    options: toOptions(answer, (start + 4) * 2 + 1),
+    options: toOptions(answer, (start + 4) * 2 + 1, rng),
     explanation: 'Each term is the next perfect square.',
   };
 }
@@ -135,37 +141,37 @@ function squares() {
 
 const SHAPES = ['circle', 'square', 'triangle', 'diamond'];
 
-function shapeCycle() {
-  const cycleLen = randInt(2, 3);
-  const cycle = shuffle(SHAPES).slice(0, cycleLen);
+function shapeCycle(rng = Math.random) {
+  const cycleLen = randInt(2, 3, rng);
+  const cycle = shuffle(SHAPES, rng).slice(0, cycleLen);
   const seq = [0, 1, 2, 3].map((i) => cycle[i % cycleLen]);
   const answer = cycle[4 % cycleLen];
-  const distractors = shuffle(SHAPES.filter((s) => s !== answer)).slice(0, 3);
+  const distractors = shuffle(SHAPES.filter((s) => s !== answer), rng).slice(0, 3);
   return {
     kind: 'shape',
     sequence: seq,
     answer,
-    options: shuffle([answer, ...distractors]),
+    options: shuffle([answer, ...distractors], rng),
     explanation: `The shapes repeat in a cycle of ${cycleLen}.`,
   };
 }
 
-function shapePairs() {
+function shapePairs(rng = Math.random) {
   // AABB as a genuine period-4 repeating cycle (a,a,b,b,a,a,b,b,...) rather
   // than "then some new shape starts" — that first draft was ambiguous
   // between the two unused shapes, no more derivable than shapeGrowingCount
   // was. This one wraps back to the start of its own 4-slot cycle, same
   // grounding as shapeCycle, just with an AABB rhythm instead of ABAB/ABC.
-  const [a, b] = shuffle(SHAPES).slice(0, 2);
+  const [a, b] = shuffle(SHAPES, rng).slice(0, 2);
   const cycle = [a, a, b, b];
   const seq = [0, 1, 2, 3].map((i) => cycle[i % cycle.length]);
   const answer = cycle[4 % cycle.length];
-  const distractors = shuffle(SHAPES.filter((s) => s !== answer)).slice(0, 3);
+  const distractors = shuffle(SHAPES.filter((s) => s !== answer), rng).slice(0, 3);
   return {
     kind: 'shape',
     sequence: seq,
     answer,
-    options: shuffle([answer, ...distractors]),
+    options: shuffle([answer, ...distractors], rng),
     explanation: 'Each shape appears twice, then the pattern repeats from the start.',
   };
 }
@@ -181,11 +187,11 @@ const MEDIUM = [geometric, alternating, shapePairs];
 const HARD = [fibonacciLike, squares];
 
 /** Difficulty rises with streak — easy generators dominate early, harder ones mix in later. */
-export function generatePuzzle(streak = 0) {
+export function generatePuzzle(streak = 0, rng = Math.random) {
   let pool = EASY;
   if (streak >= 8) pool = [...EASY, ...MEDIUM, ...HARD];
   else if (streak >= 3) pool = [...EASY, ...MEDIUM];
 
-  const generator = pool[randInt(0, pool.length - 1)];
-  return generator();
+  const generator = pool[randInt(0, pool.length - 1, rng)];
+  return generator(rng);
 }

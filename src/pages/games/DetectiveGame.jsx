@@ -12,8 +12,8 @@ function newRound(draw) {
 }
 
 /** Which clue (if any) eliminates this suspect. */
-function eliminatingClue(mystery, suspect) {
-  return mystery.clues.find((c) => c.eliminates === suspect) ?? null;
+function eliminatingClue(mystery, name) {
+  return mystery.clues.find((c) => c.eliminates === name) ?? null;
 }
 
 export default function DetectiveGame() {
@@ -25,10 +25,10 @@ export default function DetectiveGame() {
 
   const { mystery, suspects } = round;
 
-  function handlePick(suspect) {
+  function handlePick(name) {
     if (picked !== null) return;
-    setPicked(suspect);
-    submitAnswer(suspect === mystery.solution);
+    setPicked(name);
+    submitAnswer(name === mystery.solution);
   }
 
   function nextRound() {
@@ -71,26 +71,28 @@ export default function DetectiveGame() {
         </ol>
       </div>
 
+      <span className="detective-game__suspects-label">Suspects — check each fact against the clues above</span>
       <div className="detective-game__suspects">
-        {suspects.map((suspect) => {
-          const isPicked = picked === suspect;
-          const isSolution = suspect === mystery.solution;
-          const clue = eliminatingClue(mystery, suspect);
+        {suspects.map(({ name, fact }) => {
+          const isPicked = picked === name;
+          const isSolution = name === mystery.solution;
+          const clue = eliminatingClue(mystery, name);
           const showState = picked !== null && (isPicked || isSolution);
 
           return (
             <button
-              key={suspect}
+              key={name}
               className={`detective-suspect${
                 showState ? (isSolution ? ' detective-suspect--solution' : ' detective-suspect--eliminated') : ''
               }`}
-              onClick={() => handlePick(suspect)}
+              onClick={() => handlePick(name)}
               disabled={picked !== null}
             >
-              <span className="detective-suspect__name">{suspect}</span>
+              <span className="detective-suspect__name">{name}</span>
+              <span className="detective-suspect__fact">{fact}</span>
               {picked !== null && (
                 <span className="detective-suspect__status">
-                  {isSolution ? 'Not eliminated by any clue' : `Eliminated — ${clue?.text}`}
+                  {isSolution ? 'Not eliminated by any clue' : `Eliminated by clue: "${clue?.text}"`}
                 </span>
               )}
             </button>

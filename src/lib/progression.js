@@ -71,4 +71,6 @@ export const XP_AWARDS = {
   nodeMastered: 60,
   gameRoundCorrect: 8,
   gameStreakBonus: 15,
+  dailyPuzzleCorrect: 30,
+  dailyPuzzleAttempted: 10,
 };

@@ -11,13 +11,11 @@ import {
   incrementChallenge,
   completeChallenge,
   recordGameRound,
+  completeDailyPuzzle,
 } from '../lib/store';
 import { levelFromXp, titleForLevel, XP_AWARDS } from '../lib/progression';
 import { firebaseReady } from '../lib/firebase';
-
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
-}
+import { todayStr } from '../lib/date';
 
 const UserContext = createContext(null);
 
@@ -92,6 +90,18 @@ export function UserProvider({ children }) {
     [uid]
   );
 
+  const dailyPuzzleDoneToday = profile.dailyPuzzle.date === todayStr();
+
+  const finishDailyPuzzle = useCallback(
+    (correct) => {
+      if (dailyPuzzleDoneToday) return; // one attempt per day
+      completeDailyPuzzle(uid, correct);
+      gainXp(correct ? XP_AWARDS.dailyPuzzleCorrect : XP_AWARDS.dailyPuzzleAttempted);
+      if (correct) gainTokens(10);
+    },
+    [uid, dailyPuzzleDoneToday, gainXp, gainTokens]
+  );
+
   const levelInfo = useMemo(() => levelFromXp(profile.xp), [profile.xp]);
   const title = useMemo(() => titleForLevel(levelInfo.level), [levelInfo.level]);
 
@@ -112,6 +122,8 @@ export function UserProvider({ children }) {
       reflectOnToday,
       logChallengeProgress,
       recordGameResult,
+      dailyPuzzleDoneToday,
+      finishDailyPuzzle,
     }),
     [
       authUser,
@@ -127,6 +139,8 @@ export function UserProvider({ children }) {
       reflectOnToday,
       logChallengeProgress,
       recordGameResult,
+      dailyPuzzleDoneToday,
+      finishDailyPuzzle,
     ]
   );
 
