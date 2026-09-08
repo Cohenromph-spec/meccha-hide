@@ -77,7 +77,7 @@ still hand-authored), custom challenge generation, achievements, and character c
 | Hosting | GitHub Pages (via GitHub Actions) |
 | Data | Firestore (single-user for now; schema is multi-user-ready) |
 | Auth | Firebase email/password |
-| AI | Not yet integrated — Phase 5 |
+| AI | Claude (Anthropic API) via Firebase Cloud Functions — see `functions/` |
 
 ## Getting started
 
@@ -102,6 +102,9 @@ Push to `main` and the `deploy.yml` workflow builds and publishes to GitHub Page
 If you're using Firestore, add the six `VITE_FIREBASE_*` values as repo secrets so the deployed
 build has them too (Settings → Secrets and variables → Actions).
 
+Cloud Functions deploy separately, on their own schedule, via `firebase deploy` — see
+`functions/README.md`. They don't go through the GitHub Pages workflow above.
+
 ## Architecture notes
 
 - **`src/lib/store.js`** is the only place that talks to persistence (Firestore or
@@ -116,16 +119,24 @@ build has them too (Settings → Secrets and variables → Actions).
 
 ## Roadmap
 
-Phases 3-5 (AI-generated daily content, custom challenge generation, and the AI Brain) are
-deferred until an Anthropic API key + a small backend proxy are worth setting up — GitHub Pages
-is static hosting and can't hold a secret key, so this needs real infra + a small recurring API
-cost, not just code. Jumped ahead to Phase 6 in the meantime since it needed neither.
+Phases 3-5 all need the same missing piece: an Anthropic API key held server-side, since GitHub
+Pages is static hosting and can't hold a secret. That piece now exists — see `functions/` (Firebase
+Cloud Functions, holds the key via Secret Manager, never ships to the client) and
+`functions/README.md` for the one-time setup (Firebase Blaze plan + an Anthropic API key, both
+require the account owner's billing, so they're manual steps, not something committed to the repo).
 
 1. ~~Foundation~~
 2. ~~Knowledge Network — the interactive graph centerpiece~~
-3. Daily experience depth (AI-generated daily content) — **deferred, needs an AI provider decision**
-4. Live Challenges — custom challenge generation — **deferred, same reason**
-5. AI Brain — Claude-powered personalized learning — **deferred, same reason**
+3. Daily experience depth (AI-generated daily content) — **in progress.** The AI proxy
+   (`functions/generateDailyDiscovery.ts`) is built and wired into the homepage's "Today in
+   Nexus" AI tile (`src/lib/ai.js`, `src/components/home/TodayInNexus.jsx`) — auth-gated,
+   cached in Firestore by date (one Anthropic call per day, not per page load), structured
+   output validated against a Zod schema so a malformed response can't reach the UI. Falls back
+   to the hand-authored discovery bank silently if the function isn't deployed yet or the call
+   fails. Not yet done: the rest of the daily surface (Today's Philosophy, Live Challenges) is
+   still hand-authored.
+4. Live Challenges — custom challenge generation — **deferred**, same proxy, not built yet
+5. AI Brain — Claude-powered personalized learning — **deferred**, same proxy, not built yet
 6. ~~Game Arcade — a few polished games, not many shallow ones~~ (all four shipped: Pattern
-   Logic, Critical Thinking, Human Behavior, Detective)
-7. Progression — achievements, cosmetics, character growth (this phase, next)
+   Logic, Critical Thinking, Human Behavior, Detective — all four now with real difficulty tiers)
+7. Progression — achievements, cosmetics, character growth — not started

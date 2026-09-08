@@ -11,7 +11,10 @@ export default function DiscoveryTile({ discovery }) {
 
   return (
     <div className="discovery-tile" style={{ '--accent': accent }} onClick={() => setOpen((v) => !v)}>
-      <div className="discovery-tile__category">{categoryLabel(discovery.category)}</div>
+      <div className="discovery-tile__category">
+        {categoryLabel(discovery.category)}
+        {discovery.source === 'ai' && <span className="discovery-tile__ai-tag">Written today by Claude</span>}
+      </div>
       <div className="discovery-tile__title">{discovery.title}</div>
       {!open && <div className="discovery-tile__teaser">Tap to explore →</div>}
 
