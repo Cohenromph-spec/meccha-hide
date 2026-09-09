@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import PageHeader from '../components/common/PageHeader.jsx';
-import ComingSoon from '../components/common/ComingSoon.jsx';
 import CharacterSilhouette from '../components/character/CharacterSilhouette.jsx';
 import { useUser } from '../context/UserContext.jsx';
 import { logIn, signUp, logOut } from '../lib/auth.js';
 import { IconToken } from '../components/layout/icons.jsx';
+import { cosmeticThemes } from '../data/cosmeticThemes.js';
 import './Profile.css';
 
 function AuthPanel() {
@@ -61,6 +61,50 @@ function AuthPanel() {
   );
 }
 
+function ThemePicker() {
+  const { profile, buyTheme, wearTheme } = useUser();
+  const [busyId, setBusyId] = useState(null);
+
+  async function handlePick(theme) {
+    const owned = profile.unlockedThemeIds.includes(theme.id);
+    if (owned) {
+      if (profile.equippedThemeId !== theme.id) wearTheme(theme.id);
+      return;
+    }
+    if (profile.memoryTokens < theme.cost) return;
+    setBusyId(theme.id);
+    const bought = await buyTheme(theme.id, theme.cost);
+    if (bought) wearTheme(theme.id);
+    setBusyId(null);
+  }
+
+  return (
+    <div className="theme-picker">
+      {cosmeticThemes.map((theme) => {
+        const owned = profile.unlockedThemeIds.includes(theme.id);
+        const equipped = profile.equippedThemeId === theme.id;
+        const affordable = profile.memoryTokens >= theme.cost;
+        return (
+          <button
+            key={theme.id}
+            className={`theme-swatch${equipped ? ' theme-swatch--equipped' : ''}`}
+            onClick={() => handlePick(theme)}
+            disabled={busyId === theme.id || (!owned && !affordable)}
+          >
+            <span className="theme-swatch__preview">
+              <CharacterSilhouette size={40} themeId={theme.id} glow />
+            </span>
+            <span className="theme-swatch__name">{theme.name}</span>
+            <span className="theme-swatch__status">
+              {equipped ? 'Equipped' : owned ? 'Equip' : `${theme.cost} tokens`}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Profile() {
   const { authUser, isLocalOnly, profile } = useUser();
 
@@ -69,16 +113,12 @@ export default function Profile() {
       <PageHeader title="Profile" subtitle="Your character, your account, your Nexus." />
 
       <div className="profile-page__character">
-        <CharacterSilhouette size={96} glow />
+        <CharacterSilhouette size={96} glow themeId={profile.equippedThemeId} />
         <div className="profile-page__tokens">
           <IconToken width={18} height={18} />
           <span>{profile.memoryTokens} Memory Tokens</span>
         </div>
-        <ComingSoon
-          phase="Phase 7"
-          title="Character Customization"
-          description="Spend Memory Tokens on cosmetics, accessories, and effects — earned through exploration, never required for content."
-        />
+        <ThemePicker />
       </div>
 
       <div className="profile-page__account">

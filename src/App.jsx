@@ -3,9 +3,14 @@ import AppShell from './components/layout/AppShell.jsx';
 import Home from './pages/Home.jsx';
 import Explore from './pages/Explore.jsx';
 import Play from './pages/Play.jsx';
+import PatternLogicGame from './pages/games/PatternLogicGame.jsx';
+import CriticalThinkingGame from './pages/games/CriticalThinkingGame.jsx';
+import HumanBehaviorGame from './pages/games/HumanBehaviorGame.jsx';
+import DetectiveGame from './pages/games/DetectiveGame.jsx';
 import Journey from './pages/Journey.jsx';
 import Library from './pages/Library.jsx';
 import Profile from './pages/Profile.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 export default function App() {
   return (
@@ -14,9 +19,14 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/play" element={<Play />} />
+        <Route path="/play/pattern-logic" element={<PatternLogicGame />} />
+        <Route path="/play/critical-thinking" element={<CriticalThinkingGame />} />
+        <Route path="/play/human-behavior" element={<HumanBehaviorGame />} />
+        <Route path="/play/detective" element={<DetectiveGame />} />
         <Route path="/journey" element={<Journey />} />
         <Route path="/library" element={<Library />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AppShell>
   );

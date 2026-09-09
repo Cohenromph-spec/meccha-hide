@@ -1,5 +1,6 @@
 import { doc, getDoc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, firebaseReady } from './firebase';
+import { todayStr } from './date';
 
 /**
  * Persistence layer for a Nexus user profile.
@@ -31,6 +32,11 @@ export const DEFAULT_PROFILE = {
   savedDiscoveryIds: [],
   reflections: [],
   challengeProgress: {},
+  gameStats: {},
+  dailyPuzzle: { date: null, correct: null, streak: 0 },
+  unlockedAchievementIds: [],
+  unlockedThemeIds: ['default'],
+  equippedThemeId: 'default',
   createdAt: null,
 };
 
@@ -44,12 +50,18 @@ function readLocal() {
   }
 }
 
+// localStorage has no same-tab change event (the native `storage` event only
+// fires in *other* tabs), so local mode needs its own tiny pub-sub or the
+// UI never hears about writes it made itself — this set is that pub-sub.
+const localListeners = new Set();
+
 function writeLocal(profile) {
   try {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(profile));
   } catch {
     // Private browsing / storage disabled — profile just won't persist. Not fatal.
   }
+  localListeners.forEach((fn) => fn(profile));
 }
 
 /** Subscribe to profile changes. Returns an unsubscribe function. */
@@ -67,8 +79,9 @@ export function subscribeProfile(uid, callback) {
     });
   }
 
+  localListeners.add(callback);
   callback(readLocal());
-  return () => {};
+  return () => localListeners.delete(callback);
 }
 
 export async function getProfile(uid) {
@@ -132,4 +145,68 @@ export async function completeChallenge(uid, challengeId) {
       [challengeId]: { ...existing, completedAt: new Date().toISOString() },
     },
   });
+}
+
+/** Record today's Daily Puzzle result — one attempt per calendar day. */
+export async function completeDailyPuzzle(uid, correct) {
+  const current = await getProfile(uid);
+  const today = todayStr();
+  const prev = current.dailyPuzzle;
+  let streak = 1;
+  if (prev.date) {
+    const diffDays = Math.round((new Date(today) - new Date(prev.date)) / 86_400_000);
+    if (diffDays === 1) streak = (prev.streak || 0) + 1;
+    else if (diffDays === 0) streak = prev.streak || 1;
+  }
+  await updateProfile(uid, { dailyPuzzle: { date: today, correct, streak } });
+}
+
+/** Record one round of a game (correct/incorrect + the streak reached). */
+export async function recordGameRound(uid, gameId, { correct, streak }) {
+  const current = await getProfile(uid);
+  const existing = current.gameStats[gameId] ?? { totalPlayed: 0, totalCorrect: 0, bestStreak: 0 };
+  const next = {
+    totalPlayed: existing.totalPlayed + 1,
+    totalCorrect: existing.totalCorrect + (correct ? 1 : 0),
+    bestStreak: Math.max(existing.bestStreak, streak),
+  };
+  await updateProfile(uid, { gameStats: { ...current.gameStats, [gameId]: next } });
+}
+
+/**
+ * Mark achievements unlocked and award their tokens — re-reads the
+ * profile fresh and dedupes against it (not the possibly-stale value the
+ * caller computed `newlyUnlocked` from) so this is safe to call more than
+ * once with an overlapping list without double-paying.
+ */
+export async function unlockAchievements(uid, newlyUnlocked) {
+  if (newlyUnlocked.length === 0) return;
+  const current = await getProfile(uid);
+  const already = new Set(current.unlockedAchievementIds ?? []);
+  const trulyNew = newlyUnlocked.filter((a) => !already.has(a.id));
+  if (trulyNew.length === 0) return;
+  const reward = trulyNew.reduce((sum, a) => sum + a.reward, 0);
+  await updateProfile(uid, {
+    unlockedAchievementIds: [...current.unlockedAchievementIds, ...trulyNew.map((a) => a.id)],
+    memoryTokens: current.memoryTokens + reward,
+  });
+}
+
+/** Spend Memory Tokens to unlock a cosmetic theme. Returns false if already owned or unaffordable. */
+export async function purchaseTheme(uid, themeId, cost) {
+  const current = await getProfile(uid);
+  if (current.unlockedThemeIds.includes(themeId)) return false;
+  if (current.memoryTokens < cost) return false;
+  await updateProfile(uid, {
+    unlockedThemeIds: [...current.unlockedThemeIds, themeId],
+    memoryTokens: current.memoryTokens - cost,
+  });
+  return true;
+}
+
+/** Equip an already-unlocked cosmetic theme. No-op if it isn't owned. */
+export async function equipTheme(uid, themeId) {
+  const current = await getProfile(uid);
+  if (!current.unlockedThemeIds.includes(themeId)) return;
+  await updateProfile(uid, { equippedThemeId: themeId });
 }

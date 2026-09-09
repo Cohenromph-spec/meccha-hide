@@ -1,0 +1,14 @@
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-7) 0;
+}
+
+.not-found__home {
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}

@@ -1,9 +1,13 @@
+import { useSearchParams } from 'react-router-dom';
 import PageHeader from '../components/common/PageHeader.jsx';
-import ComingSoon from '../components/common/ComingSoon.jsx';
 import ContinueExploring from '../components/home/ContinueExploring.jsx';
+import KnowledgeNetwork from '../components/network/KnowledgeNetwork.jsx';
 import './Explore.css';
 
 export default function Explore() {
+  const [searchParams] = useSearchParams();
+  const focusDomain = searchParams.get('domain');
+
   return (
     <div className="explore-page">
       <PageHeader
@@ -14,11 +18,7 @@ export default function Explore() {
       <ContinueExploring />
 
       <div className="explore-page__network">
-        <ComingSoon
-          phase="Phase 2"
-          title="The Knowledge Network"
-          description="An interactive, living map of your ideas — zoom, pan, and follow connections across AI, Psychology, Philosophy, and the World. This is the centerpiece of Nexus, built next."
-        />
+        <KnowledgeNetwork focusDomain={focusDomain} />
       </div>
     </div>
   );
