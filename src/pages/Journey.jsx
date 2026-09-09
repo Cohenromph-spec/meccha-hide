@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import PageHeader from '../components/common/PageHeader.jsx';
 import { useUser } from '../context/UserContext.jsx';
 import { levelFromXp } from '../lib/progression.js';
@@ -9,8 +10,53 @@ import './Journey.css';
 
 const DOMAINS = ['ai', 'psychology', 'philosophy', 'world'];
 
+function ChallengeCard({ challenge }) {
+  const { profile, logChallengeProgress, noteOnChallenge } = useUser();
+  const progress = profile.challengeProgress[challenge.id] ?? { count: 0, completedAt: null, notes: '' };
+  const done = Boolean(progress.completedAt);
+  const saved = progress.notes ?? '';
+  const [draft, setDraft] = useState(saved);
+  const dirty = draft !== saved;
+
+  return (
+    <div className="journey-challenge">
+      <div className="journey-challenge__row">
+        <span className="journey-challenge__icon">{challenge.icon}</span>
+        <div className="journey-challenge__body">
+          <div className="journey-challenge__title">{challenge.title}</div>
+          <div className="journey-challenge__count">
+            {Math.min(progress.count, challenge.targetCount)} / {challenge.targetCount}
+          </div>
+        </div>
+        {done ? (
+          <span className="journey-challenge__done">✓</span>
+        ) : (
+          <button onClick={() => logChallengeProgress(challenge.id, challenge.targetCount)}>Log</button>
+        )}
+      </div>
+      <div className="journey-challenge__notes">
+        <label className="journey-challenge__notes-label" htmlFor={`challenge-note-${challenge.id}`}>
+          {challenge.reflectionPrompt}
+        </label>
+        <textarea
+          id={`challenge-note-${challenge.id}`}
+          rows={2}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="What did you notice? What did you learn?"
+        />
+        {dirty && (
+          <button className="journey-challenge__notes-save" onClick={() => noteOnChallenge(challenge.id, draft.trim())}>
+            Save note
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Journey() {
-  const { profile, title, levelInfo, logChallengeProgress } = useUser();
+  const { profile, title, levelInfo } = useUser();
   const chainProgress = getAllChainProgress(profile);
   const totalTiers = achievementChains.reduce((sum, c) => sum + c.tiers.length, 0);
   const unlockedTiers = profile.unlockedAchievementIds.length;
@@ -57,26 +103,9 @@ export default function Journey() {
       <section className="journey__section">
         <h3>All Live Challenges</h3>
         <div className="journey__challenges">
-          {challengesContent.map((challenge) => {
-            const progress = profile.challengeProgress[challenge.id] ?? { count: 0, completedAt: null };
-            const done = Boolean(progress.completedAt);
-            return (
-              <div key={challenge.id} className="journey-challenge">
-                <span className="journey-challenge__icon">{challenge.icon}</span>
-                <div className="journey-challenge__body">
-                  <div className="journey-challenge__title">{challenge.title}</div>
-                  <div className="journey-challenge__count">
-                    {Math.min(progress.count, challenge.targetCount)} / {challenge.targetCount}
-                  </div>
-                </div>
-                {done ? (
-                  <span className="journey-challenge__done">✓</span>
-                ) : (
-                  <button onClick={() => logChallengeProgress(challenge.id, challenge.targetCount)}>Log</button>
-                )}
-              </div>
-            );
-          })}
+          {challengesContent.map((challenge) => (
+            <ChallengeCard key={challenge.id} challenge={challenge} />
+          ))}
         </div>
       </section>
 

@@ -37,6 +37,8 @@ export const DEFAULT_PROFILE = {
   unlockedAchievementIds: [],
   unlockedThemeIds: ['default'],
   equippedThemeId: 'default',
+  nodeNotes: {},
+  discoveryNotes: {},
   createdAt: null,
 };
 
@@ -209,4 +211,35 @@ export async function equipTheme(uid, themeId) {
   const current = await getProfile(uid);
   if (!current.unlockedThemeIds.includes(themeId)) return;
   await updateProfile(uid, { equippedThemeId: themeId });
+}
+
+/**
+ * Mark a Knowledge Network node explored, optionally saving the written
+ * reflection that unlocked it (nothing to save if the user unlocked it by
+ * answering the comprehension question instead — `note` is undefined then).
+ * A no-op if already explored, so a stray double-submit can't double-award
+ * the node's XP/tokens (those are still granted by the caller in
+ * UserContext, which checks exploredNodeIds first).
+ */
+export async function exploreNode(uid, nodeId, note) {
+  const current = await getProfile(uid);
+  if (current.exploredNodeIds.includes(nodeId)) return;
+  const next = { exploredNodeIds: [...current.exploredNodeIds, nodeId] };
+  if (note) next.nodeNotes = { ...current.nodeNotes, [nodeId]: note };
+  await updateProfile(uid, next);
+}
+
+/** Save/update the personal note attached to a saved discovery. */
+export async function saveDiscoveryNote(uid, discoveryId, text) {
+  const current = await getProfile(uid);
+  await updateProfile(uid, { discoveryNotes: { ...current.discoveryNotes, [discoveryId]: text } });
+}
+
+/** Save/update the "what I learned" reflection attached to a Live Challenge. */
+export async function saveChallengeNote(uid, challengeId, text) {
+  const current = await getProfile(uid);
+  const existing = current.challengeProgress[challengeId] ?? { count: 0, completedAt: null, notes: '' };
+  await updateProfile(uid, {
+    challengeProgress: { ...current.challengeProgress, [challengeId]: { ...existing, notes: text } },
+  });
 }
