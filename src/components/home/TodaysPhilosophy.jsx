@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { philosophyContent } from '../../data/philosophyContent.js';
-import { pickForToday } from '../../lib/daily.js';
+import { pickForToday, pickRandom } from '../../lib/daily.js';
 import { useUser } from '../../context/UserContext.jsx';
 import './TodaysPhilosophy.css';
 
@@ -13,18 +13,39 @@ const RATINGS = [
 export default function TodaysPhilosophy() {
   const [expanded, setExpanded] = useState(false);
   const [note, setNote] = useState('');
+  // A manual swap, kept in plain component state (not persisted) — resets
+  // to the normal daily pick on reload. Once you've actually reflected on
+  // one today, that pick is locked in for the rest of the day (see
+  // `reflectedPhilosophy` below) — swapping is only for "not feeling this
+  // one" before you've engaged with it, not a way to get extra reflections.
+  const [override, setOverride] = useState(null);
   const { todaysReflection, reflectOnToday } = useUser();
-  const philosophy = pickForToday(philosophyContent);
 
-  const alreadyReflected = todaysReflection?.philosophyId === philosophy.id;
+  const reflectedPhilosophy = todaysReflection
+    ? philosophyContent.find((p) => p.id === todaysReflection.philosophyId)
+    : null;
+  const philosophy = reflectedPhilosophy ?? override ?? pickForToday(philosophyContent);
+  const alreadyReflected = Boolean(todaysReflection);
 
   function submit(rating) {
     reflectOnToday({ philosophyId: philosophy.id, rating, text: note.trim() });
   }
 
+  function swapPhilosophy() {
+    setOverride(pickRandom(philosophyContent, philosophy.id));
+    setExpanded(false);
+  }
+
   return (
     <section className="philosophy-card">
-      <div className="philosophy-card__eyebrow">Today's Philosophy</div>
+      <div className="philosophy-card__eyebrow-row">
+        <div className="philosophy-card__eyebrow">Today's Philosophy</div>
+        {!alreadyReflected && (
+          <button className="philosophy-card__swap" onClick={swapPhilosophy}>
+            Show me something else →
+          </button>
+        )}
+      </div>
       <h2 className="philosophy-card__title">{philosophy.title}</h2>
       <blockquote className="philosophy-card__quote">&ldquo;{philosophy.quote}&rdquo;</blockquote>
       <p className="philosophy-card__source">{philosophy.source}</p>
