@@ -75,6 +75,13 @@
   margin-top: 1px;
 }
 
+/* Integration/Expert are single-best-pick, not multi-select — a round
+   dot instead of a checkbox signals "choose one" at a glance. */
+.hb-option__check--radio {
+  border-radius: 999px;
+  font-size: 9px;
+}
+
 .hb-option__body {
   display: flex;
   flex-direction: column;

@@ -114,11 +114,15 @@ export const achievementChains = [
     id: 'streak-humanBehavior',
     icon: '🗣️',
     label: 'Human Behavior',
+    // Human Behavior runs its own 5-tier ladder (see pickHumanBehaviorTier
+    // in lib/games/tierGate.js) instead of the standard 3-tier gate every
+    // other game uses — these thresholds mirror it directly.
     metric: (p) => p.gameStats.humanBehavior?.bestStreak ?? 0,
     tiers: [
       { threshold: 3, title: 'People Reader', description: 'Reach a 3-streak in Human Behavior — Medium tier unlocked.', reward: 15 },
-      { threshold: 8, title: 'Deep Listener', description: 'Reach an 8-streak in Human Behavior — Hard tier unlocked.', reward: 30 },
-      { threshold: 15, title: 'Social Savant', description: 'Reach a 15-streak in Human Behavior.', reward: 55 },
+      { threshold: 7, title: 'Deep Listener', description: 'Reach a 7-streak in Human Behavior — Connection tier unlocked.', reward: 25 },
+      { threshold: 12, title: 'Social Savant', description: 'Reach a 12-streak in Human Behavior — Integration tier unlocked.', reward: 45 },
+      { threshold: 18, title: 'Master of Motive', description: 'Reach an 18-streak in Human Behavior — Expert tier unlocked.', reward: 75 },
     ],
   },
   {

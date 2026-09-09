@@ -21,3 +21,19 @@
   color: var(--danger);
   background: color-mix(in srgb, var(--danger) 16%, transparent);
 }
+
+/* Human Behavior's deeper 5-tier ladder only. */
+.tier-badge--connection {
+  color: var(--accent-ai);
+  background: color-mix(in srgb, var(--accent-ai) 16%, transparent);
+}
+
+.tier-badge--integration {
+  color: var(--accent-psychology);
+  background: color-mix(in srgb, var(--accent-psychology) 16%, transparent);
+}
+
+.tier-badge--expert {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 22%, transparent);
+}

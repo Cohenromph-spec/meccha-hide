@@ -243,4 +243,189 @@ export const humanBehaviorScenarios = [
     ],
     tier: 'hard',
   },
+
+  // ============================================================
+  // DEEPER TIER LADDER (Cohen's "master prompt" reasoning-depth
+  // redesign, piloted on this game first). 'easy'/'medium' above are
+  // unchanged — they already fit "Recognition"/"Application." These
+  // three new tiers are genuinely different reasoning demands, not
+  // more of the same:
+  //
+  // 'connection' — three-way categorization (supported / possible /
+  // overreach) instead of binary reasonable/overreach. "Possible" is
+  // the new hard part: an explanation that's generically plausible in
+  // the abstract but that THIS scenario gives no specific reason to
+  // pick — distinguishing "could be true of anyone" from "this
+  // scenario's own details point here" is the actual skill.
+  //
+  // 'integration' — single-select. Given 4 separate observed details,
+  // only one explanation coherently accounts for all four; the
+  // distractors each explain a subset (or none) while sounding
+  // reasonable in isolation. Verified by hand for each option: does it
+  // actually use every detail, or does it quietly ignore the ones that
+  // don't fit?
+  //
+  // 'expert' — single-select, and NOT always "not enough information"
+  // (that would just be a new predictable safe answer, exactly the
+  // failure mode being fixed). Deliberately mixed: two scenarios where
+  // the honest answer really is insufficient evidence, two where a
+  // specific answer is genuinely the best-supported one — with a
+  // "not enough information" option present as a real, plausible-
+  // sounding wrong answer in those, not just absent when the answer
+  // is elsewhere.
+  //
+  // All three new tiers were checked with the same adversarial
+  // length/wording pass this file's easy/medium content already went
+  // through once (see the top-of-file comment) — the "not enough
+  // information" options especially, since a long, elaborately-hedged
+  // version of that answer was an obvious re-run of the exact
+  // longest-option exploit already found and fixed in this game once.
+  // ============================================================
+
+  // --- Connection: supported / possible / overreach (select only 'supported') ---
+  {
+    id: 'roommate-boxes-late-nights',
+    tier: 'connection',
+    scenario: 'Your roommate has been coming home very late this week, and yesterday you noticed a stack of moving boxes in their room.',
+    explanations: [
+      { text: 'They might be planning to move out soon.', category: 'supported', note: 'The moving boxes are direct, observable evidence pointing specifically at this.' },
+      { text: "Whatever's keeping them out late could be tied to preparing for a move — packing, apartment hunting, logistics.", category: 'supported', note: 'This connects the two observed details (late nights + boxes) into one consistent explanation, rather than treating them as unrelated.' },
+      { text: "They've probably just been working a lot of overtime this week.", category: 'possible', note: 'A generically plausible reason for late nights — but nothing here actually points to overtime specifically, and it doesn\'t explain the boxes at all.' },
+      { text: 'They might be seeing someone new and spending time at their place.', category: 'possible', note: "A believable guess about late nights in the abstract, but nothing in this scenario suggests a relationship — and it doesn't touch the boxes either." },
+      { text: "They're moving out because they don't want to live with you anymore.", category: 'overreach', note: 'This assumes a specific, personal motive for the move that nothing here actually supports — people move for dozens of reasons unrelated to a roommate.' },
+      { text: "They've probably been avoiding you on purpose this whole week.", category: 'overreach', note: 'This reframes two fairly ordinary observations as deliberate avoidance, a big leap with nothing here pointing to intent.' },
+    ],
+  },
+  {
+    id: 'friend-short-replies-after-news',
+    tier: 'connection',
+    scenario: 'You told a close friend some big news about your own life last week. Since then, their replies to your texts have been shorter than usual, though they still reply the same day every time.',
+    explanations: [
+      { text: 'They might need some time to process the news before they feel ready to talk more.', category: 'supported', note: 'The timing lines up directly with when you shared the news — this ties a specific detail (timing) to the change in behavior.' },
+      { text: "The news may have stirred up something personal for them, separate from anything about you.", category: 'supported', note: 'This also uses the specific timing detail — something clearly changed right when the news was shared, which narrows down what\'s actually being explained.' },
+      { text: "They've probably just been busier than usual lately, between work, other commitments, and everything else going on.", category: 'possible', note: "A common, generic explanation for shorter texts — but nothing here points to them being busier, and it doesn't explain why it started exactly when the news did." },
+      { text: 'Their texting style might just naturally vary from week to week depending on their mood or schedule.', category: 'possible', note: 'Plausible in general, but it ignores the specific timing coincidence with the news, which is the one thing distinguishing this from an ordinary slow week.' },
+      { text: "They're upset with you specifically for sharing that particular piece of news in the first place.", category: 'overreach', note: "This assumes a specific negative reaction, but replying every single day is actually inconsistent with someone upset enough to pull away." },
+      { text: "They don't actually care all that much about what's going on in your life these days.", category: 'overreach', note: 'This reads a permanent, sweeping judgment about the friendship out of one week of shorter, but still daily, replies.' },
+    ],
+  },
+  {
+    id: 'coworker-avoids-eye-contact',
+    tier: 'connection',
+    scenario: "In a team meeting yesterday, you disagreed with a coworker's proposal in front of the group. Today, they've avoided eye contact with you and answered your question in the hallway more briefly than usual.",
+    explanations: [
+      { text: "They might feel embarrassed or exposed after their proposal was pushed back on in front of the whole group.", category: 'supported', note: 'This directly follows from the specific event — the public disagreement — that happened right before the behavior changed.' },
+      { text: 'They could just be feeling a bit awkward about the disagreement itself, without anything deeper going on.', category: 'supported', note: 'A narrower, more grounded version of "something about the meeting is affecting them," tied to the same specific trigger.' },
+      { text: 'They might just be having an off day unrelated to work entirely, for reasons that have nothing to do with the meeting at all.', category: 'possible', note: 'A generic explanation that could apply to anyone — but it ignores that the specific timing lines up with yesterday\'s meeting.' },
+      { text: "They could be dealing with something at home that's distracting them from everything else going on this week, including this conversation.", category: 'possible', note: "Plausible on its own, but nothing in this scenario points toward anything happening outside work — it's imported from outside the given details." },
+      { text: "They're quietly planning to go over your head about the disagreement to someone above you.", category: 'overreach', note: "This invents a specific, escalating intention with zero evidence — avoided eye contact and a brief hallway answer don't indicate a plan." },
+      { text: 'They resent you now and the entire working relationship between you two is permanently damaged.', category: 'overreach', note: 'This treats one day of awkwardness as a permanent verdict on the relationship, which the evidence doesn\'t come close to establishing.' },
+    ],
+  },
+  {
+    id: 'sibling-cancels-mentions-bill',
+    tier: 'connection',
+    scenario: "Your sibling was supposed to visit this weekend but cancelled at the last minute. In the same message, they mentioned they'd just found out about an unexpected car repair bill.",
+    explanations: [
+      { text: "The car repair might have eaten into the money or time they'd set aside for this trip specifically.", category: 'supported', note: "They connected the two facts themselves, in the same message — this isn't a stretch, it's closely following what they actually said." },
+      { text: 'Dealing with the sudden bill is probably stressful enough on its own to make traveling feel like too much right now.', category: 'supported', note: 'This stays tied to the specific, stated stressor — the bill — rather than inventing a separate cause.' },
+      { text: "They might just not have been feeling up to a long trip this particular weekend, for reasons unrelated to money.", category: 'possible', note: 'A generic reason people cancel plans — but it ignores the specific detail they actually gave you about the bill.' },
+      { text: 'Something else entirely in their week could have gotten busier or more complicated at the last minute.', category: 'possible', note: "Plausible in the abstract, but there's no actual evidence for a separate 'something else' when they already gave a specific reason." },
+      { text: "They're avoiding visiting you specifically and used the bill as a convenient cover story.", category: 'overreach', note: 'This ignores the concrete explanation they volunteered and replaces it with a much more personal, unsupported one.' },
+      { text: "Money problems mean something much bigger is going on in their life that they're not telling you about.", category: 'overreach', note: 'This treats one unexpected bill as evidence of a larger hidden problem, a significant leap past what was actually shared.' },
+    ],
+  },
+
+  // --- Integration: single-select, one option accounts for every detail ---
+  {
+    id: 'friend-four-changes',
+    tier: 'integration',
+    scenario: "Over the past month, a friend has: stopped suggesting hangouts like they used to, taken longer than usual to reply to texts, mentioned twice that work has been \"a lot\" lately, and still enthusiastically said yes whenever YOU suggested plans.",
+    options: [
+      { text: "They're pulling back from the friendship, quietly losing interest in staying close the way they used to.", correct: false, note: "If they were pulling back, agreeing enthusiastically whenever you suggest plans wouldn't make sense — that detail actively works against this explanation." },
+      { text: "It's a busy work stretch, not a change in how they feel.", correct: true, note: "This is the only explanation that accounts for all four details together: less initiating (less bandwidth to plan), slower replies (same reason), explicitly mentioning heavy work twice, and still saying yes enthusiastically when you make the effort — their interest hasn't changed, their capacity has." },
+      { text: "They've found a new friend group.", correct: false, note: "Nothing in the four details points to other people at all — this explanation isn't actually built from the evidence given, it's imported from outside it." },
+      { text: 'They\'re upset with you about something specific you did or said.', correct: false, note: "This doesn't explain the enthusiastic yes when you suggest plans — someone upset with you specifically wouldn't typically respond that way." },
+    ],
+  },
+  {
+    id: 'roommate-money-tight',
+    tier: 'integration',
+    scenario: "Your roommate has: started buying only the cheapest groceries, mentioned their car needs a repair they're \"putting off,\" asked to split a bill differently than usual in their favor, and seemed unusually tense during a casual conversation about weekend plans.",
+    options: [
+      { text: "They're going through a stretch of financial tightness.", correct: true, note: "This connects all four details into a single cause: cheap groceries, a delayed repair, wanting a bill split more favorably, and tension specifically around a conversation involving spending money — financial strain explains every one of them." },
+      { text: "They're just upset with you.", correct: false, note: "This doesn't explain the delayed car repair or the cheap groceries, which have nothing to do with you — it only tries to account for one of the four details." },
+      { text: 'They\'re becoming more frugal in general, as a deliberate long-term lifestyle choice they\'ve been considering for a while.', correct: false, note: 'This doesn\'t fit the tension during the weekend-plans conversation or the "putting off" language about the repair, both of which sound like stress about a temporary situation, not a settled new habit.' },
+      { text: "They're planning a big purchase down the road and saving up for it deliberately and happily.", correct: false, note: "A deliberate, excited saving plan wouldn't usually come with visible tension and a delayed necessary repair — those two details fit a squeeze, not a plan." },
+    ],
+  },
+  {
+    id: 'partner-distracted-sister',
+    tier: 'integration',
+    scenario: 'Over two weeks, your partner has: been on their phone more during dinner, given shorter answers to "how was your day," still initiated a weekend trip together, and mentioned their sister has been going through "a hard time" twice.',
+    options: [
+      { text: "They're falling out of interest in the relationship after this long together.", correct: false, note: "This doesn't fit initiating a weekend trip together — someone losing interest typically wouldn't be the one proposing more shared time." },
+      { text: "Their mind is elsewhere — likely their sister's situation, not the relationship.", correct: true, note: "This fits all four details: distraction (phone, short answers) explained by something occupying their mind, the repeated specific mention of their sister's hard time as the likely source, and the weekend trip still being initiated showing the relationship itself isn't what changed." },
+      { text: "They're hiding something from you that they don't want you to find out about.", correct: false, note: "This explanation doesn't use the sister detail at all, and doesn't explain why they'd still initiate more time together if they had something to hide." },
+      { text: 'The relationship has just settled into a naturally less exciting, more routine phase after this much time together.', correct: false, note: "This doesn't account for the specific, repeated mention of the sister's hard time, a concrete detail pointing at a specific cause rather than a general fade." },
+    ],
+  },
+  {
+    id: 'teammate-quality-drop',
+    tier: 'integration',
+    scenario: 'A usually-reliable teammate on a group project has: turned in their last two parts late, apologized both times without much explanation, stopped responding in the group chat as quickly, and asked the group chat once whether anyone knew a good therapist recommendation "for a friend."',
+    options: [
+      { text: "They've stopped caring about the project.", correct: false, note: "This doesn't fit the genuine apologies or the fact they still turned the work in, just late — someone who'd stopped caring typically wouldn't bother apologizing at all." },
+      { text: "Something outside the project is taking priority right now.", correct: true, note: 'This fits every detail: lateness with short apologies instead of over-explaining, slower general responsiveness, and the therapist question — phrased distantly, "for a friend" — hinting at something personal, all pointing the same direction.' },
+      { text: "They're intentionally letting the group down to avoid doing their share of the work.", correct: false, note: "This doesn't explain the apologies (someone doing this deliberately usually wouldn't bother) or the therapist question, which has nothing to do with project effort." },
+      { text: "They've lost confidence in their part of the project specifically and are struggling with it.", correct: false, note: "This only tries to explain the lateness, and doesn't connect to the therapist question or the reduced general responsiveness — it explains one detail, not the pattern." },
+    ],
+  },
+
+  // --- Expert: single-select, deliberately mixed — "not enough information"
+  // is correct in exactly half of these, never a safe default. ---
+  {
+    id: 'new-coworker-quiet-two-weeks',
+    tier: 'expert',
+    scenario: 'A new coworker has been quiet in team meetings for their first two weeks, speaking only when directly asked a question.',
+    options: [
+      { text: "They're not yet comfortable with the team, and that discomfort is showing as quietness.", correct: false, note: "Genuinely plausible, but with only two weeks and nothing else known about them, this isn't more supported than the alternatives — it's a guess, not a conclusion." },
+      { text: "They're just a naturally quiet, reserved person.", correct: false, note: "Equally plausible to the options around it — nothing here favors this explanation over the others." },
+      { text: "They're still learning enough context about the team's work to contribute confidently in meetings.", correct: false, note: 'Also reasonable, and also not distinguishable from the alternatives with what\'s given here.' },
+      { text: "There isn't enough information yet to tell which of these actually fits.", correct: true, note: 'The honest answer: all three explanations above are genuinely plausible and none is favored by anything specific in this scenario. Picking one now would mean picking a guess and calling it a conclusion.' },
+    ],
+  },
+  {
+    id: 'friend-declines-then-follows-up',
+    tier: 'expert',
+    scenario: "You invited a friend to something and they said no, seeming distracted. Twenty minutes later, they texted back: \"Sorry, that came out short — today's just been a lot, can we do it another time? I do want to.\"",
+    options: [
+      { text: "There genuinely isn't enough information here to know how they actually feel about the invite, one way or another.", correct: false, note: 'This undersells what\'s actually here — they explicitly followed up, unprompted, to clarify and reaffirm interest. That\'s real, specific evidence, not an absence of it.' },
+      { text: "They're just being polite and don't actually want to hang out, deep down.", correct: false, note: "This requires ignoring the unprompted follow-up message entirely — someone being merely polite doesn't typically circle back on their own to explain and reaffirm." },
+      { text: 'The rough day shaped the first reply, and the follow-up is how they actually feel.', correct: true, note: 'They told you directly — "today\'s just been a lot" — and voluntarily followed up to clarify and reaffirm wanting to hang out. This is about as directly supported as an explanation gets: it\'s closest to just believing what they explicitly said.' },
+      { text: "They're testing whether you'll reach out and make the effort again first.", correct: false, note: 'This invents a strategic motive with nothing pointing to it — the actual message given is a straightforward, unprompted clarification, not a game.' },
+    ],
+  },
+  {
+    id: 'text-read-no-reply-three-hours',
+    tier: 'expert',
+    scenario: "You sent someone a text three hours ago. It shows as read, and they haven't replied yet.",
+    options: [
+      { text: "They're deliberately choosing to ignore your message right now.", correct: false, note: "Plausible, but a single unanswered text after three hours is consistent with dozens of mundane explanations, and nothing here specifically points to deliberate avoidance." },
+      { text: "They're simply busy right now and will reply once they get a chance.", correct: false, note: "Also plausible — but equally, nothing here specifically confirms this over the alternatives either." },
+      { text: 'They saw it, meant to reply, and it genuinely slipped their mind afterward.', correct: false, note: 'Common and believable, but again just one of several equally-unconfirmed possibilities.' },
+      { text: "There isn't enough here yet to know which explanation actually fits.", correct: true, note: 'A single data point this thin — three hours, one "read" receipt — doesn\'t distinguish between the explanations above. Treating any one of them as the answer would be more confident than the evidence allows.' },
+    ],
+  },
+  {
+    id: 'friend-cancels-but-always-follows-through',
+    tier: 'expert',
+    scenario: "A friend has cancelled on you three times this month. Each time, they've reached out within a day to apologize specifically, suggested a new date without you having to ask, and followed through on the rescheduled plan every time.",
+    options: [
+      { text: "There isn't enough information here to know if this is a real pattern or just one rough month.", correct: false, note: "There actually is a consistent pattern here across all three instances — the same follow-up behavior every time — which is more than 'not enough information,' it's a repeated, specific, confirmed pattern." },
+      { text: "They're avoiding you but feel too guilty about it to just say so directly.", correct: false, note: "This doesn't fit the follow-through — someone avoiding you wouldn't reliably show up for every rescheduled plan." },
+      { text: "Circumstances are genuinely making this a hard month, and the friendship is intact.", correct: true, note: 'The consistent pattern — the same real cancellation, the same unprompted specific apology, the same initiative to reschedule, the same follow-through every single time — points clearly to circumstances, not the relationship. If interest were the issue, the reliable follow-through wouldn\'t be there.' },
+      { text: "They're being flaky in general and don't actually prioritize spending time with you.", correct: false, note: 'This doesn\'t account for the consistent, specific apology and 100% follow-through rate — someone being genuinely flaky wouldn\'t have a perfect record of actually showing up once rescheduled.' },
+    ],
+  },
 ];
