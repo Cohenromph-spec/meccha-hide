@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { discoveryContent } from '../data/discoveryContent.js';
 import { philosophyContent } from '../data/philosophyContent.js';
 import DiscoveryTile from '../components/discovery/DiscoveryTile.jsx';
@@ -6,6 +7,36 @@ import PageHeader from '../components/common/PageHeader.jsx';
 import './Library.css';
 
 const RATING_LABEL = { yes: 'Yes', somewhat: 'Somewhat', 'not-really': 'Not really' };
+
+function SavedDiscoveryCard({ discovery }) {
+  const { profile, noteOnDiscovery } = useUser();
+  const saved = profile.discoveryNotes[discovery.id] ?? '';
+  const [draft, setDraft] = useState(saved);
+  const dirty = draft !== saved;
+
+  return (
+    <div className="saved-discovery">
+      <DiscoveryTile discovery={discovery} />
+      <div className="saved-discovery__notes">
+        <label className="saved-discovery__notes-label" htmlFor={`note-${discovery.id}`}>
+          What this made you think of
+        </label>
+        <textarea
+          id={`note-${discovery.id}`}
+          rows={2}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="Write a note..."
+        />
+        {dirty && (
+          <button className="saved-discovery__save" onClick={() => noteOnDiscovery(discovery.id, draft.trim())}>
+            Save note
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function Library() {
   const { profile } = useUser();
@@ -28,7 +59,7 @@ export default function Library() {
         ) : (
           <div className="library__grid">
             {saved.map((d) => (
-              <DiscoveryTile key={d.id} discovery={d} />
+              <SavedDiscoveryCard key={d.id} discovery={d} />
             ))}
           </div>
         )}

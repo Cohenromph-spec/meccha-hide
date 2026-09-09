@@ -106,9 +106,9 @@ export default function KnowledgeNetwork({ focusDomain }) {
 
   const selectedNode = knowledgeNodes.find((n) => n.id === selectedId) ?? null;
 
-  function handleExplore(node) {
+  function handleExplore(node, note) {
     if (profile.exploredNodeIds.includes(node.id)) return;
-    markNodeExplored(node.id);
+    markNodeExplored(node.id, note);
     gainXp(XP_AWARDS.nodeExplored, node.domain);
     gainTokens(8);
   }
@@ -197,10 +197,11 @@ export default function KnowledgeNetwork({ focusDomain }) {
 
       {selectedNode && (
         <NodeDetailPanel
+          key={selectedNode.id}
           node={selectedNode}
           state={nodeState(selectedNode, profile.exploredNodeIds)}
           allNodes={knowledgeNodes}
-          onExplore={() => handleExplore(selectedNode)}
+          onExplore={(note) => handleExplore(selectedNode, note)}
           onSelectNode={setSelectedId}
           onClose={() => setSelectedId(null)}
         />

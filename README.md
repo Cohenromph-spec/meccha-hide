@@ -20,7 +20,16 @@ What's built:
   Pinch-to-zoom and drag-to-pan via d3-zoom. Locked / available / explored node states gated by
   prerequisites. Edges carry a traveling "signal" pulse (SVG animateMotion) once either endpoint
   is reachable — dormant/active/lit states, not one uniform animation. "Continue Exploring" tiles
-  deep-link into the graph (`?domain=`) and auto-pan/open that domain's root node.
+  deep-link into the graph (`?domain=`) and auto-pan/open that domain's root node. Unlocking a
+  node takes real engagement, not one click: either write a short reflection (min length
+  enforced) or answer a comprehension question about the node (`check` field in
+  `data/knowledgeNodes.js`, answerable purely from that node's own description — no outside
+  knowledge, nothing fabricated). Reflections are saved and readable later; a wrong quiz answer
+  just lets you retry or switch to writing instead, no penalty.
+- **Written reflections on saved content**: discoveries (Library) and Live Challenges (Journey)
+  both have a personal notes field — "what this made you think of" / "what did you learn" —
+  saved per item in the profile (`discoveryNotes`, `challengeProgress[id].notes`) and editable
+  any time, not just once.
 - **Game Arcade** (`src/pages/games/`, `src/hooks/useGameSession.js`): four games, all with real
   streak-gated difficulty (medium unlocks at streak ≥3, hard at streak ≥8 — shared thresholds via
   `src/lib/games/tierGate.js`, badge shown via `src/components/games/TierBadge.jsx`). Difficulty

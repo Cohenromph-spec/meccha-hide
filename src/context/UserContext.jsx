@@ -15,6 +15,9 @@ import {
   unlockAchievements,
   purchaseTheme,
   equipTheme,
+  exploreNode,
+  saveDiscoveryNote,
+  saveChallengeNote,
 } from '../lib/store';
 import { levelFromXp, titleForLevel, XP_AWARDS } from '../lib/progression';
 import { firebaseReady } from '../lib/firebase';
@@ -57,13 +60,20 @@ export function UserProvider({ children }) {
 
   const gainTokens = useCallback((amount) => addMemoryTokens(uid, amount), [uid]);
 
+  // `note` is the written reflection, when that's the path the user took to
+  // unlock the node — omitted when they unlocked it by answering the
+  // comprehension question instead (see NodeDetailPanel).
   const markNodeExplored = useCallback(
-    (nodeId) => {
+    (nodeId, note) => {
       if (profile.exploredNodeIds.includes(nodeId)) return;
-      updateProfile(uid, { exploredNodeIds: [...profile.exploredNodeIds, nodeId] });
+      exploreNode(uid, nodeId, note);
     },
     [uid, profile.exploredNodeIds]
   );
+
+  const noteOnDiscovery = useCallback((discoveryId, text) => saveDiscoveryNote(uid, discoveryId, text), [uid]);
+
+  const noteOnChallenge = useCallback((challengeId, text) => saveChallengeNote(uid, challengeId, text), [uid]);
 
   const saveDiscovery = useCallback(
     (discoveryId) => {
@@ -147,6 +157,8 @@ export function UserProvider({ children }) {
       finishDailyPuzzle,
       buyTheme,
       wearTheme,
+      noteOnDiscovery,
+      noteOnChallenge,
     }),
     [
       authUser,
@@ -166,6 +178,8 @@ export function UserProvider({ children }) {
       finishDailyPuzzle,
       buyTheme,
       wearTheme,
+      noteOnDiscovery,
+      noteOnChallenge,
     ]
   );
 
