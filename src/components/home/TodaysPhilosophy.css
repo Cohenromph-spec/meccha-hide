@@ -18,13 +18,34 @@
   pointer-events: none;
 }
 
+.philosophy-card__eyebrow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
 .philosophy-card__eyebrow {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-philosophy);
-  margin-bottom: var(--space-2);
+}
+
+.philosophy-card__swap {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.philosophy-card__swap:hover {
+  color: var(--accent-philosophy);
 }
 
 .philosophy-card__title {
