@@ -50,6 +50,30 @@ export function pickForToday(items, salt = 0) {
   return shuffled[positionInCycle];
 }
 
+/**
+ * Same idea as `pickForToday`, but for "today's N picks" (e.g. the
+ * homepage's 2-challenge Live Challenges widget) instead of a single item.
+ * Takes `count` consecutive items from that day's shuffled cycle — still
+ * guaranteed distinct (as long as count <= items.length), still shifts by
+ * one position each day, still reshuffles (differently) every time it
+ * cycles back through the whole bank. Same building blocks as
+ * `pickForToday`, not a second, separately-maintained rotation — that's
+ * exactly how the homepage Live Challenges widget ended up with its own
+ * unfixed copy of the old day-of-year bug in the first place.
+ */
+export function pickMultipleForToday(items, count, salt = 0) {
+  const dayIndex = daysSinceEpoch() + salt;
+  const cycleLength = items.length;
+  const cycle = Math.floor(dayIndex / cycleLength);
+  const positionInCycle = dayIndex % cycleLength;
+  const shuffled = seededShuffle(items, cycle);
+  const picks = [];
+  for (let i = 0; i < Math.min(count, cycleLength); i++) {
+    picks.push(shuffled[(positionInCycle + i) % cycleLength]);
+  }
+  return picks;
+}
+
 /** A genuinely random pick, optionally avoiding a repeat of the last id shown. */
 export function pickRandom(items, excludeId) {
   const pool = excludeId ? items.filter((item) => item.id !== excludeId) : items;

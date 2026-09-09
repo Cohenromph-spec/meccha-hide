@@ -1,23 +1,24 @@
 import { challengesContent } from '../../data/challengesContent.js';
+import { pickMultipleForToday } from '../../lib/daily.js';
 import { useUser } from '../../context/UserContext.jsx';
 import './LiveChallenges.css';
 
 // Phase 1 shows a rotating pair so the homepage doesn't repeat the exact
 // same two challenges forever — full browsing of all challenges is Phase 4.
-function activeChallenges() {
-  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86_400_000);
-  const start = dayOfYear % challengesContent.length;
-  return [challengesContent[start], challengesContent[(start + 1) % challengesContent.length]];
-}
+// This used to be its own local dayOfYear-modulo implementation — the exact
+// bug already found and fixed in lib/daily.js's pickForToday, just never
+// applied here (Cohen: "the live challenges never changed" — this is why).
+// Reusing the shared, verified helper instead of maintaining a second copy.
 
 export default function LiveChallenges() {
   const { profile, logChallengeProgress } = useUser();
+  const activeChallenges = pickMultipleForToday(challengesContent, 2);
 
   return (
     <section className="live-challenges">
       <h3 className="live-challenges__heading">Live Challenges</h3>
       <div className="live-challenges__list">
-        {activeChallenges().map((challenge) => {
+        {activeChallenges.map((challenge) => {
           const progress = profile.challengeProgress[challenge.id] ?? { count: 0, completedAt: null };
           const done = Boolean(progress.completedAt);
 
