@@ -92,6 +92,12 @@ What's built:
   glow (Cohen caught this). Voidglass additionally gets a real translucent-glass treatment
   (reduced fill opacity so the background shows through, an edge stroke, a diagonal specular
   highlight clipped to the silhouette's own shape) instead of being a plain gray recolor.
+- **Content depth**: `discoveryContent.js` (63 entries — 24 AI, 9 psychology, 6 philosophy, 6
+  science, 6 world, 12 random) and `challengesContent.js` (12 Live Challenges) are each tripled
+  from their original size. Not just padding — the AI category specifically needed it: at 8
+  items, the daily rotation (even after fixing the actual repeat bug in `lib/daily.js`) still
+  cycled the same 8 facts every ~8 days, which is what "getting repeats" actually meant. At 24
+  it's a 24-day cycle before anything repeats.
 - Firebase auth + Firestore persistence, with a **local-only fallback** (localStorage) so the app
   is fully usable before any Firebase project is wired up — including live UI updates in that
   mode (see `localListeners` in `src/lib/store.js`), not just after a manual reload.
