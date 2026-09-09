@@ -10,6 +10,7 @@ import DetectiveGame from './pages/games/DetectiveGame.jsx';
 import Journey from './pages/Journey.jsx';
 import Library from './pages/Library.jsx';
 import Profile from './pages/Profile.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/journey" element={<Journey />} />
         <Route path="/library" element={<Library />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AppShell>
   );
