@@ -4,7 +4,7 @@ import { levelFromXp } from '../../lib/progression.js';
 import { CATEGORIES } from '../../lib/categories.js';
 import './ContinueExploring.css';
 
-const DOMAINS = ['ai', 'psychology', 'philosophy', 'world'];
+const DOMAINS = ['ai', 'psychology', 'philosophy', 'world', 'communication'];
 
 export default function ContinueExploring() {
   const { profile } = useUser();

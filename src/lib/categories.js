@@ -4,6 +4,7 @@ export const CATEGORIES = {
   psychology: { label: 'Psychology', var: '--accent-psychology' },
   philosophy: { label: 'Philosophy', var: '--accent-philosophy' },
   world: { label: 'World', var: '--accent-world' },
+  communication: { label: 'Communication', var: '--accent-communication' },
   science: { label: 'Science', var: '--accent-ai' },
   random: { label: 'Discovery', var: '--accent-world' },
 };

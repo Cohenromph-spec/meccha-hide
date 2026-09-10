@@ -431,4 +431,314 @@ export const knowledgeNodes = [
       correctIndex: 0,
     },
   },
+
+  // ---- AI (additions) ----
+  {
+    id: 'ai-alignment',
+    domain: 'ai',
+    title: 'AI Alignment',
+    tier: 'advanced',
+    description:
+      'Alignment is the problem of getting an AI system to actually pursue the goals you meant, not just the goals you literally specified — a model optimizing hard for the wrong proxy can satisfy the letter of an instruction while completely missing the point.',
+    requires: ['ai-agents'],
+    connects: [],
+    check: {
+      question: 'What is the alignment problem primarily about, per this node?',
+      options: [
+        'Getting an AI to pursue what you meant, not just what you literally specified',
+        'Making models run faster',
+        'Increasing a model\'s training data size',
+        'Giving a model more tools to use',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'ai-bias-and-fairness',
+    domain: 'ai',
+    title: 'AI Bias & Fairness',
+    tier: 'advanced',
+    description:
+      "A model trained on real-world data inherits whatever patterns — including unfair ones — were already in that data. It doesn't invent bias out of nowhere; it reflects, and can amplify, biases already present in what it learned from.",
+    requires: ['llm-basics'],
+    connects: ['cognitive-biases'],
+    check: {
+      question: "Where does a model's bias actually come from, per this node?",
+      options: [
+        'It reflects and can amplify biases already present in its training data',
+        'The model invents bias randomly during training',
+        'Bias only comes from how a user phrases a prompt',
+        'Bias is automatically fixed before deployment',
+      ],
+      correctIndex: 0,
+    },
+  },
+
+  // ---- PSYCHOLOGY (additions) ----
+  {
+    id: 'emotional-intelligence',
+    domain: 'psychology',
+    title: 'Emotional Intelligence',
+    tier: 'core',
+    description:
+      "Emotional intelligence is the ability to notice what you're feeling, name it accurately, and manage the reaction before it manages you — plus reading the same in other people. It's a learnable skill, not a fixed trait you either have or don't.",
+    requires: ['psychology'],
+    connects: ['active-listening', 'difficult-conversations'],
+    check: {
+      question: 'What does this node say emotional intelligence actually is?',
+      options: [
+        'A learnable skill: noticing, naming, and managing emotion in yourself and others',
+        'A fixed trait some people are simply born with',
+        'Only about staying calm and never showing emotion',
+        'The ability to predict exactly what others will do next',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'motivation-theory',
+    domain: 'psychology',
+    title: 'Motivation',
+    tier: 'advanced',
+    description:
+      "Extrinsic motivation (rewards, pressure, deadlines) and intrinsic motivation (genuine interest, a sense of purpose) don't just add together — external rewards can actually crowd out the internal motivation someone already had for a task they found meaningful, a well-documented effect called overjustification.",
+    requires: ['social-influence'],
+    connects: ['decision-making'],
+    check: {
+      question: 'What does the overjustification effect describe, per this node?',
+      options: [
+        'External rewards can crowd out the intrinsic motivation someone already had',
+        'Extrinsic and intrinsic motivation always add together cleanly',
+        'Rewards always increase motivation with no downside',
+        'Motivation is entirely fixed and can\'t be influenced',
+      ],
+      correctIndex: 0,
+    },
+  },
+
+  // ---- PHILOSOPHY (additions) ----
+  {
+    id: 'epistemology',
+    domain: 'philosophy',
+    title: 'Epistemology',
+    tier: 'core',
+    description:
+      'Epistemology asks how we actually know what we claim to know — what separates a justified belief from a lucky guess that happened to be true. Most people never examine why they believe what they believe until something forces the question.',
+    requires: ['philosophy'],
+    connects: ['media-literacy'],
+    check: {
+      question: 'What question does epistemology ask, per this node?',
+      options: [
+        'How we actually know what we claim to know, and what justifies a belief',
+        'What the ultimate meaning of life is',
+        'How societies should be organized',
+        'What happens after death',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'utilitarianism-vs-deontology',
+    domain: 'philosophy',
+    title: 'Utilitarianism vs. Deontology',
+    tier: 'advanced',
+    description:
+      'Utilitarianism judges an action by its consequences — does it produce the most good for the most people. Deontology judges an action by whether it follows a moral rule, regardless of outcome — some things are wrong to do even if they\'d produce a better result. The two frameworks can reach opposite verdicts on the exact same choice.',
+    requires: ['ethics'],
+    connects: ['negotiation'],
+    check: {
+      question: 'Per this node, what does deontology judge an action by?',
+      options: [
+        'Whether it follows a moral rule, regardless of outcome',
+        'Whether it produces the most good for the most people',
+        'How much profit it generates',
+        'How popular the action is',
+      ],
+      correctIndex: 0,
+    },
+  },
+
+  // ---- WORLD (additions) ----
+  {
+    id: 'economics-basics',
+    domain: 'world',
+    title: 'Economics Basics',
+    tier: 'core',
+    description:
+      "Economics, at its core, is the study of how people make choices under scarcity — there's never enough of anything (time, money, resources) to do everything, so every choice is also a choice not to do something else. That trade-off is called opportunity cost.",
+    requires: ['world'],
+    connects: ['game-theory'],
+    check: {
+      question: 'What is opportunity cost, per this node?',
+      options: [
+        'The thing you give up by choosing to do something else instead',
+        'The total price paid for a purchase',
+        'The interest earned on savings',
+        "A government's total tax revenue",
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'game-theory',
+    domain: 'world',
+    title: 'Game Theory',
+    tier: 'advanced',
+    description:
+      "Game theory studies situations where the best choice for you depends on what everyone else chooses too — not just your own preferences in isolation. The classic finding: individually rational choices can add up to a worse outcome for everyone than if people had cooperated, the core tension behind the Prisoner's Dilemma.",
+    requires: ['economics-basics'],
+    connects: ['decision-making', 'negotiation'],
+    check: {
+      question: "What's the classic finding of the Prisoner's Dilemma, per this node?",
+      options: [
+        'Individually rational choices can add up to a worse outcome for everyone',
+        'Cooperation is always the mathematically wrong choice',
+        "Only one player's decision actually matters",
+        'Network effects have no impact on user value',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'network-effects',
+    domain: 'world',
+    title: 'Network Effects',
+    tier: 'advanced',
+    description:
+      'A network effect is when a product or platform gets more valuable to each user as more people join it — a phone is useless with one user and essential with a billion. This is why early users of a platform often get the worst experience, and why some markets naturally tip toward one dominant winner.',
+    requires: ['systems-thinking'],
+    connects: ['automation'],
+    check: {
+      question: 'Per this node, why does a market with strong network effects tend to tip toward one dominant winner?',
+      options: [
+        'The platform gets more valuable to each user as more people join it',
+        'Early users always get the best possible experience',
+        'Government regulation forces a single winner',
+        'Network effects have no impact on user value',
+      ],
+      correctIndex: 0,
+    },
+  },
+
+  // ---- COMMUNICATION (new domain) ----
+  {
+    id: 'communication',
+    domain: 'communication',
+    title: 'Communication',
+    tier: 'root',
+    description:
+      "Communication is the process of getting an idea out of your head and into someone else's, accurately — which fails constantly, not because people are careless, but because the sender and receiver never fully share the same context, words, or assumptions.",
+    requires: [],
+    connects: ['active-listening', 'nonverbal-communication'],
+    check: {
+      question: 'Per this node, why does communication fail so often?',
+      options: [
+        'The sender and receiver never fully share the same context, words, or assumptions',
+        'People are usually careless when they communicate',
+        "Communication only fails when people don't like each other",
+        'Modern technology has made communication less accurate',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'active-listening',
+    domain: 'communication',
+    title: 'Active Listening',
+    tier: 'core',
+    description:
+      "Active listening means actually processing what someone said well enough to accurately restate it back, not just waiting for your turn to talk. Most people listen to reply, not to understand — and it shows, because they can't actually repeat back what they just heard.",
+    requires: ['communication'],
+    connects: ['emotional-intelligence'],
+    check: {
+      question: "What does this node say most people actually do while 'listening'?",
+      options: [
+        'Listen to reply, not to understand',
+        'Fully process and remember everything said',
+        'Naturally restate what they heard without effort',
+        "Focus entirely on the other person's tone",
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'nonverbal-communication',
+    domain: 'communication',
+    title: 'Nonverbal Communication',
+    tier: 'core',
+    description:
+      "A huge share of what gets communicated in a conversation never gets said out loud — tone, posture, pacing, facial expression. When someone's words and their nonverbal signals contradict each other, people almost always trust the nonverbal signal over the words.",
+    requires: ['communication'],
+    connects: [],
+    check: {
+      question: 'When words and nonverbal signals contradict each other, which does this node say people tend to trust?',
+      options: [
+        'The nonverbal signal',
+        'The literal words spoken',
+        'Neither — they just get confused',
+        'Whichever came first in the conversation',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'difficult-conversations',
+    domain: 'communication',
+    title: 'Difficult Conversations',
+    tier: 'advanced',
+    description:
+      "Most difficult conversations go badly not because of what's disagreed on, but because both people are arguing about a different underlying layer at the same time — what happened, how it feels, and what it says about each person's identity — without ever naming which layer they're actually stuck on.",
+    requires: ['active-listening'],
+    connects: ['emotional-intelligence'],
+    check: {
+      question: 'Per this node, why do most difficult conversations actually go badly?',
+      options: [
+        'Both people are arguing about a different underlying layer at once, without naming it',
+        'The two people usually just dislike each other',
+        'One person is always objectively right',
+        'Difficult conversations are inherently unsolvable',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'persuasion-vs-manipulation',
+    domain: 'communication',
+    title: 'Persuasion vs. Manipulation',
+    tier: 'advanced',
+    description:
+      "Persuasion and manipulation can use identical techniques — the line between them is whether the other person would still agree with your reasoning if they could see exactly how you were influencing them. Persuasion survives transparency; manipulation depends on the other person not noticing.",
+    requires: ['nonverbal-communication'],
+    connects: ['manipulation'],
+    check: {
+      question: "What's the actual dividing line between persuasion and manipulation, per this node?",
+      options: [
+        "Whether the reasoning survives the other person seeing exactly how they're being influenced",
+        'Persuasion always uses different techniques than manipulation',
+        'Manipulation is simply a more polite version of persuasion',
+        'There is no real difference between the two',
+      ],
+      correctIndex: 0,
+    },
+  },
+  {
+    id: 'negotiation',
+    domain: 'communication',
+    title: 'Negotiation',
+    tier: 'advanced',
+    description:
+      "Effective negotiation isn't about who wants it more or who's more stubborn — it's about understanding each side's actual underlying interest, not just their stated position, since two people can hold opposite positions while sharing the same underlying interest the whole time.",
+    requires: ['difficult-conversations'],
+    connects: ['game-theory', 'utilitarianism-vs-deontology'],
+    check: {
+      question: 'Per this node, what should negotiation actually focus on?',
+      options: [
+        "Each side's actual underlying interest, not just their stated position",
+        'Whoever is more stubborn winning by default',
+        'Splitting every difference exactly down the middle',
+        'Avoiding any compromise at all',
+      ],
+      correctIndex: 0,
+    },
+  },
 ];
