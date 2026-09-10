@@ -31,7 +31,7 @@
 import { discoveryContent } from './discoveryContent.js';
 import { levelFromXp } from '../lib/progression.js';
 
-const DOMAINS = ['ai', 'psychology', 'philosophy', 'world'];
+const DOMAINS = ['ai', 'psychology', 'philosophy', 'world', 'communication'];
 
 export const achievementChains = [
   {
@@ -184,7 +184,7 @@ export const achievementChains = [
     label: 'All Domains',
     metric: (p) => Math.min(...DOMAINS.map((d) => levelFromXp(p.domainXp[d] ?? 0).level)),
     tiers: [
-      { threshold: 2, title: 'Renaissance Mind', description: 'Reach domain level 2 in AI, Psychology, Philosophy, and World.', reward: 50 },
+      { threshold: 2, title: 'Renaissance Mind', description: 'Reach domain level 2 in AI, Psychology, Philosophy, World, and Communication.', reward: 50 },
       { threshold: 4, title: 'Renaissance Master', description: 'Reach domain level 4 in every domain.', reward: 90 },
     ],
   },

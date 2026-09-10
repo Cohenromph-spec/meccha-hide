@@ -27,6 +27,7 @@ export const DEFAULT_PROFILE = {
     psychology: 0,
     philosophy: 0,
     world: 0,
+    communication: 0,
   },
   exploredNodeIds: [],
   savedDiscoveryIds: [],

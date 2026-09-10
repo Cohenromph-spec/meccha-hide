@@ -8,7 +8,7 @@ import { achievementChains } from '../data/achievementChains.js';
 import { getAllChainProgress } from '../lib/achievements.js';
 import './Journey.css';
 
-const DOMAINS = ['ai', 'psychology', 'philosophy', 'world'];
+const DOMAINS = ['ai', 'psychology', 'philosophy', 'world', 'communication'];
 
 function ChallengeCard({ challenge }) {
   const { profile, logChallengeProgress, noteOnChallenge } = useUser();
