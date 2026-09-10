@@ -13,19 +13,30 @@ export function pickTier(streak) {
 }
 
 /**
- * Human Behavior's own 5-tier ladder (Connection / Integration / Expert
- * added on top of the standard Easy / Medium) — kept as a separate
- * function rather than widening `pickTier` above, so Pattern Logic,
- * Critical Thinking, and Detective are completely unaffected. Thresholds
- * are spaced further apart than the 3-tier gate because each new tier is
- * a genuinely different reasoning mechanic, not just harder wording —
- * earning your way to it should mean something.
+ * A 6-tier ladder shape shared by any game that's grown its own deeper
+ * reasoning tiers on top of the original easy/medium/hard system, rather
+ * than replacing it — `hard` (the original near-miss/compound-clue tier)
+ * stays reachable, it just isn't the ceiling anymore. Human Behavior and
+ * Critical Thinking both use this with identical thresholds; kept as a
+ * shared builder (not copy-pasted six times) specifically so a fix like
+ * this one — an earlier version of Human Behavior's own ladder shipped
+ * without a `hard` branch at all, silently orphaning its two hard-tier
+ * scenarios — can't happen again for a different game the same way.
  */
-export function pickHumanBehaviorTier(streak) {
-  const tiers = ['easy'];
-  if (streak >= 3) tiers.push('medium');
-  if (streak >= 7) tiers.push('connection');
-  if (streak >= 12) tiers.push('integration');
-  if (streak >= 18) tiers.push('expert');
-  return tiers[Math.floor(Math.random() * tiers.length)];
+function makeDeepTierPicker() {
+  return function pick(streak) {
+    const tiers = ['easy'];
+    if (streak >= 3) tiers.push('medium');
+    if (streak >= 6) tiers.push('hard');
+    if (streak >= 9) tiers.push('connection');
+    if (streak >= 14) tiers.push('integration');
+    if (streak >= 20) tiers.push('expert');
+    return tiers[Math.floor(Math.random() * tiers.length)];
+  };
 }
+
+/** Human Behavior's 6-tier ladder — see makeDeepTierPicker above. */
+export const pickHumanBehaviorTier = makeDeepTierPicker();
+
+/** Critical Thinking's 6-tier ladder — same shape, own function. */
+export const pickCriticalThinkingTier = makeDeepTierPicker();
