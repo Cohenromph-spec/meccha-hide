@@ -11,30 +11,32 @@ import './HumanBehaviorGame.css';
 const DECKS_BY_TIER = {
   easy: createScenarioDeck(humanBehaviorScenarios.filter((s) => s.tier === 'easy')),
   medium: createScenarioDeck(humanBehaviorScenarios.filter((s) => s.tier === 'medium')),
+  hard: createScenarioDeck(humanBehaviorScenarios.filter((s) => s.tier === 'hard')),
   connection: createScenarioDeck(humanBehaviorScenarios.filter((s) => s.tier === 'connection')),
   integration: createScenarioDeck(humanBehaviorScenarios.filter((s) => s.tier === 'integration')),
   expert: createScenarioDeck(humanBehaviorScenarios.filter((s) => s.tier === 'expert')),
 };
 
-// 'easy'/'medium'/'connection' are all "select every option that fits" —
-// they only differ in what "fits" means (see MULTI_MODE below). 'integration'
-// and 'expert' are "pick the single best-supported option" and share the
-// options array on the scenario itself instead of `explanations`.
-const MULTI_TIERS = new Set(['easy', 'medium', 'connection']);
+// 'easy'/'medium'/'hard'/'connection' are all "select every option that
+// fits" — they only differ in what "fits" means (see MULTI_MODE below).
+// 'integration' and 'expert' are "pick the single best-supported option"
+// and share the options array on the scenario itself instead of
+// `explanations`.
+const MULTI_TIERS = new Set(['easy', 'medium', 'hard', 'connection']);
 
 // What counts as a correct pick for each multi-select tier, and how each
-// option is labeled once revealed. Easy/medium keep the original binary
-// reasonable/overreach framing; connection adds the three-way possible/
-// supported/overreach distinction from Cohen's reasoning-depth spec.
+// option is labeled once revealed. Easy/medium/hard keep the original
+// binary reasonable/overreach framing; connection adds the three-way
+// possible/supported/overreach distinction from Cohen's reasoning-depth
+// spec.
+const REASONABLE_MODE = {
+  isTarget: (e) => e.reasonable,
+  label: (e) => (e.reasonable ? 'Reasonable — ' : 'A leap — '),
+};
 const MULTI_MODE = {
-  easy: {
-    isTarget: (e) => e.reasonable,
-    label: (e) => (e.reasonable ? 'Reasonable — ' : 'A leap — '),
-  },
-  medium: {
-    isTarget: (e) => e.reasonable,
-    label: (e) => (e.reasonable ? 'Reasonable — ' : 'A leap — '),
-  },
+  easy: REASONABLE_MODE,
+  medium: REASONABLE_MODE,
+  hard: REASONABLE_MODE,
   connection: {
     isTarget: (e) => e.category === 'supported',
     label: (e) =>
@@ -46,18 +48,22 @@ const MULTI_MODE = {
   },
 };
 
+const REASONABLE_TITLE = 'Which explanations are actually reasonable?';
+const REASONABLE_SUBTITLE =
+  "Select every possibility that's genuinely plausible. Skip the ones that jump to a conclusion the situation doesn't actually support.";
 const TITLE = {
-  easy: 'Which explanations are actually reasonable?',
-  medium: 'Which explanations are actually reasonable?',
+  easy: REASONABLE_TITLE,
+  medium: REASONABLE_TITLE,
+  hard: REASONABLE_TITLE,
   connection: 'Which explanations does THIS scenario actually support?',
   integration: 'Which explanation fits every detail?',
   expert: 'What does the evidence actually support?',
 };
 
 const SUBTITLE = {
-  easy: "Select every possibility that's genuinely plausible. Skip the ones that jump to a conclusion the situation doesn't actually support.",
-  medium:
-    "Select every possibility that's genuinely plausible. Skip the ones that jump to a conclusion the situation doesn't actually support.",
+  easy: REASONABLE_SUBTITLE,
+  medium: REASONABLE_SUBTITLE,
+  hard: REASONABLE_SUBTITLE,
   connection:
     "Some options are generically believable but not actually backed by THIS scenario's details — select only the ones this specific situation supports.",
   integration:

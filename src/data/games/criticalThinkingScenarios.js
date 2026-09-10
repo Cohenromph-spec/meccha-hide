@@ -267,4 +267,205 @@ export const criticalThinkingScenarios = [
     relatedNode: 'decision-making',
     tier: 'hard',
   },
+
+  // ============================================================
+  // DEEPER TIER LADDER — same reasoning-depth redesign piloted on Human
+  // Behavior, applied here. Easy/Medium/Hard above are unchanged (they're
+  // all "name the flaw," which is a legitimate recognition/application
+  // skill — but naming a fallacy is still terminology, not reasoning
+  // through an argument's actual structure). These three new tiers use
+  // deliberately different question shapes so the game doesn't stay a
+  // vocabulary flashcard forever:
+  //
+  // 'connection' — Find the Assumption: identify the unstated claim an
+  // argument secretly needs in order to work, before ever naming what
+  // kind of flaw that gap is.
+  //
+  // 'integration' — Evidence That Changes the Conclusion: given an
+  // argument, pick the one additional fact that actually bears on
+  // whether the conclusion is justified — not just the one that "sounds"
+  // relevant.
+  //
+  // 'expert' — Compare Two Arguments: given two short arguments toward
+  // the same claim, judge which is better reasoned. Deliberately mixed
+  // across all four possible answers (A better / B better / equally
+  // strong / both flawed) so no single answer is a safe default guess.
+  //
+  // Every distractor was checked by hand against the actual argument
+  // text — an option that "sounds" wrong without being refutable from
+  // the scenario itself would repeat the unsolvable-puzzle mistake this
+  // game has already been burned by once.
+  // ============================================================
+
+  // --- Connection: Find the Assumption ---
+  {
+    id: 'assumption-promotion',
+    tier: 'connection',
+    questionType: 'assumption',
+    argument: 'The team should promote Jae to lead engineer — they\'ve been at the company longer than anyone else on the team.',
+    prompt: "What does this argument need to be true in order to actually work, even though it's never stated?",
+    options: [
+      { text: 'Tenure is a good indicator of who should lead.', correct: true, note: "This is the load-bearing link — without it, tenure alone doesn't connect to leadership ability at all. The argument is quietly resting its whole weight on this." },
+      { text: 'Jae is well-liked by the rest of the team.', correct: false, note: "This might be true, but the argument never needs it — it's about tenure, not likability, so this isn't what the argument depends on." },
+      { text: 'No one else currently on the team wants the lead position.', correct: false, note: "Also possibly true, but irrelevant to whether the stated reasoning (tenure) actually justifies the promotion." },
+      { text: 'Jae actually has less hands-on experience than some newer hires.', correct: false, note: "This would undermine the argument, not support it — the opposite of what it needs to be true." },
+    ],
+  },
+  {
+    id: 'assumption-festival',
+    tier: 'connection',
+    questionType: 'assumption',
+    argument: "We should cancel the outdoor festival — the weather forecast says a 30% chance of rain.",
+    prompt: "What does this argument need to be true in order to actually work, even though it's never stated?",
+    options: [
+      { text: 'A 30% rain chance clears the cancel-worthy threshold.', correct: true, note: "The argument jumps straight from a number to a decision without ever establishing where the cancel-worthy threshold actually is — that judgment call is the real weight it's resting on." },
+      { text: 'The festival has been rained out once before.', correct: false, note: "Past events aren't mentioned or needed here — this argument is about this forecast, not history." },
+      { text: 'Indoor venues nearby tend to be more expensive to book on short notice.', correct: false, note: "Cost of alternatives has nothing to do with whether this specific reasoning about rain chance holds up." },
+      { text: 'Most attendees would rather stay dry than attend.', correct: false, note: "Plausible, but the argument never actually invokes attendee preference — it's built entirely on the forecast number." },
+    ],
+  },
+  {
+    id: 'assumption-new-employee',
+    tier: 'connection',
+    questionType: 'assumption',
+    argument: "Since the new employee arrived, the team's output has gone up — she must be really effective.",
+    prompt: "What does this argument need to be true in order to actually work, even though it's never stated?",
+    options: [
+      { text: "Nothing else changed that could explain the increase.", correct: true, note: "Without ruling out other causes — a new tool, a lighter workload, a deadline push — the timing alone can't actually point to her specifically. The argument quietly assumes she's the only thing that changed." },
+      { text: 'She has more experience than the rest of the team.', correct: false, note: "Never stated or needed — the argument is built purely on the timing of the output increase, not her resume." },
+      { text: 'The team genuinely enjoys working alongside her.', correct: false, note: "Irrelevant to whether the output increase is actually attributable to her." },
+      { text: 'Output was actually already climbing before she arrived.', correct: false, note: "This would directly undercut the argument, not support it — it's the reverse of what the argument needs." },
+    ],
+  },
+  {
+    id: 'assumption-restaurant-review',
+    tier: 'connection',
+    questionType: 'assumption',
+    argument: "You should trust this restaurant review — the reviewer has posted over 500 reviews.",
+    prompt: "What does this argument need to be true in order to actually work, even though it's never stated?",
+    options: [
+      { text: "Having posted many reviews means this reviewer's judgment is reliable.", correct: true, note: "Quantity of reviews is the only thing offered as a reason to trust this one — the argument needs volume to actually track reliability, which is never shown." },
+      { text: 'The restaurant has good service.', correct: false, note: "This is about the restaurant, not about why the reviewer should be trusted — not what the argument depends on." },
+      { text: "This reviewer has personally eaten at this restaurant multiple times.", correct: false, note: "Never stated or required — the argument leans entirely on review count, not repeat visits." },
+      { text: 'Reviewers who post frequently are sometimes compensated by restaurants.', correct: false, note: "This would actually work against trusting the reviewer, not support the argument for trusting them." },
+    ],
+  },
+
+  // --- Integration: Evidence That Changes the Conclusion ---
+  {
+    id: 'evidence-supplement-sales',
+    tier: 'integration',
+    questionType: 'evidence',
+    argument: "This vitamin supplement must work — sales have tripled in the last year.",
+    prompt: 'Which of these, if true, would actually change whether that conclusion is justified?',
+    options: [
+      { text: 'A large, controlled study found no benefit over a placebo.', correct: true, note: "This directly addresses the actual question — whether it works — in a way sales numbers never could. This is real evidence about effectiveness, not popularity." },
+      { text: 'The supplement now comes in a new flavor.', correct: false, note: "Has nothing to do with whether the supplement is effective." },
+      { text: "The company spent significantly more on advertising this year.", correct: false, note: "This explains why sales might have tripled, but it doesn't change the conclusion — the sales figure was never good evidence of effectiveness in the first place, so learning why sales rose doesn't add or remove anything about whether it actually works." },
+      { text: "It's now sold in twice as many stores.", correct: false, note: "Also just explains the sales number, not the supplement's actual effectiveness — same gap as the ad-spending option." },
+    ],
+  },
+  {
+    id: 'evidence-standup-format',
+    tier: 'integration',
+    questionType: 'evidence',
+    argument: "Our team's new stand-up format is working — the last two sprints, we shipped on time.",
+    prompt: 'Which of these, if true, would actually change whether that conclusion is justified?',
+    options: [
+      { text: 'Those two sprints also had unusually light scope.', correct: true, note: "This is a genuine alternative explanation for on-time delivery that has nothing to do with the stand-up format — it directly challenges whether the format is actually what changed the outcome." },
+      { text: 'Most people say they enjoy the new format.', correct: false, note: "Enjoying a process and it actually working (shipping on time) are different questions — satisfaction doesn't establish effectiveness." },
+      { text: 'The stand-ups themselves run five minutes shorter now.', correct: false, note: "A detail about the format, but doesn't bear on whether it caused on-time delivery." },
+      { text: 'One teammate initially pushed back on the new format.', correct: false, note: "Irrelevant to whether the format is actually responsible for shipping on time." },
+    ],
+  },
+  {
+    id: 'evidence-bootcamp-employment',
+    tier: 'integration',
+    questionType: 'evidence',
+    argument: "This coding bootcamp must be effective — 90% of graduates report being employed within six months.",
+    prompt: 'Which of these, if true, would actually change whether that conclusion is justified?',
+    options: [
+      { text: 'The 90% figure only counts survey respondents, and just 40% responded.', correct: true, note: "This exposes a real flaw in the statistic itself — if the people who didn't find jobs were less likely to respond, the true employment rate could be far lower. This directly undercuts the number the whole argument rests on." },
+      { text: 'The bootcamp costs roughly $12,000 for the full program.', correct: false, note: "Cost has no bearing on whether the bootcamp is actually effective at getting people employed." },
+      { text: "It's been running continuously for about 8 years now, since it first opened.", correct: false, note: "Longevity doesn't speak to effectiveness — plenty of ineffective programs run for years." },
+      { text: "The bootcamp's founder used to personally work as a software engineer.", correct: false, note: "The founder's background doesn't bear on whether the program's actual outcomes are as strong as claimed." },
+    ],
+  },
+  {
+    id: 'evidence-office-layout-slack',
+    tier: 'integration',
+    questionType: 'evidence',
+    argument: "The new office layout must be boosting collaboration — the number of cross-team Slack messages has gone up 40%.",
+    prompt: 'Which of these, if true, would actually change whether that conclusion is justified?',
+    options: [
+      { text: 'A new company-wide Slack channel also launched around the same time.', correct: true, note: "This is a real alternative cause for the message increase that has nothing to do with the physical layout — it directly challenges whether the layout is actually what's driving the number." },
+      { text: 'Most employees say they genuinely like the look of the new layout.', correct: false, note: "Liking the layout is a different question from whether it's actually increasing collaboration — preference doesn't establish the effect claimed." },
+      { text: 'The new layout cost noticeably more to build than the old one did.', correct: false, note: "Cost has nothing to do with whether the layout is actually boosting collaboration." },
+      { text: 'A handful of employees have complained about noise in the new layout.', correct: false, note: "Doesn't bear on the specific metric-based claim about Slack messages going up." },
+    ],
+  },
+
+  // --- Expert: Compare Two Arguments — deliberately mixed across all
+  // four possible verdicts (A / B / equally strong / both flawed), so
+  // no single answer is ever a safe default. ---
+  {
+    id: 'compare-four-day-week',
+    tier: 'expert',
+    questionType: 'compare',
+    claim: 'Should the company switch to a 4-day work week?',
+    argumentA: 'A controlled comparison across 3 similar companies that switched to 4-day weeks found productivity per employee stayed flat while overall costs dropped — output didn\'t fall even though hours did.',
+    argumentB: "Everyone I've talked to at other companies says a 4-day week would make them happier, so we should switch.",
+    prompt: 'Which argument is actually better supported?',
+    options: [
+      { text: 'Argument A is better supported.', correct: true, note: "A uses a real comparison group with a measurable outcome directly relevant to the business question (does output hold up?). B is anecdotal, and happiness — while real — doesn't establish the actual thing being decided." },
+      { text: 'Argument B is better supported.', correct: false, note: "B never actually addresses whether output would hold up, which is the real question — it only speaks to how people feel about the idea." },
+      { text: "They're about equally well supported.", correct: false, note: "They're not close — A has an actual controlled comparison with a relevant metric; B is informal secondhand opinion with no comparison at all." },
+      { text: 'Both have significant flaws.', correct: false, note: "A is a genuinely reasonable comparison — 3 companies isn't huge, but it's a real measured comparison, not a flaw on the scale of B's anecdote." },
+    ],
+  },
+  {
+    id: 'compare-reading-before-bed',
+    tier: 'expert',
+    questionType: 'compare',
+    claim: 'Does reading before bed actually improve sleep quality?',
+    argumentA: "I've read before bed my whole life and I sleep fine, so it must help.",
+    argumentB: 'A study tracked 200 participants\' sleep with wearable sensors over 4 weeks, comparing nights they read on paper before bed to nights they didn\'t, and found measurably more time in deep sleep on reading nights.',
+    prompt: 'Which argument is actually better supported?',
+    options: [
+      { text: 'Argument A is better supported.', correct: false, note: "A is a single person's experience with no comparison case at all — there's no way to know if they'd sleep just as well without reading." },
+      { text: 'Argument B is better supported.', correct: true, note: "B has a real sample size, an actual within-subject comparison (same people, reading nights vs. non-reading nights), and an objective measurement instead of a feeling." },
+      { text: "They're about equally well supported.", correct: false, note: "Not close — B has measurement and comparison that A completely lacks; A is a single anecdote." },
+      { text: 'Both have significant flaws.', correct: false, note: "B isn't flawless, but a 200-person tracked comparison is a real, solid piece of evidence, not a flawed one on the same level as a single anecdote." },
+    ],
+  },
+  {
+    id: 'compare-lunch-period',
+    tier: 'expert',
+    questionType: 'compare',
+    claim: 'Should the school extend the lunch period by 10 minutes?',
+    argumentA: 'A survey of 300 students found the large majority reported feeling rushed and not finishing their food, and the school nurse saw fewer stomachache complaints during a one-week pilot when lunch was extended.',
+    argumentB: 'Teachers tracked the following-period tardiness rate during the two weeks lunch was accidentally shortened by a scheduling error last year, and it was measurably higher than any other two-week stretch that semester.',
+    prompt: 'Which argument is actually better supported?',
+    options: [
+      { text: 'Argument A is better supported.', correct: false, note: "A is solid, but not clearly stronger than B — both rely on a real, if imperfect, natural comparison rather than opinion alone." },
+      { text: 'Argument B is better supported.', correct: false, note: "B is solid too, but not clearly stronger than A — neither has an obvious edge in rigor over the other." },
+      { text: "They're about equally well supported.", correct: true, note: "Both point the same direction (lunch length affects student wellbeing/behavior) using a real comparison — a survey plus a measured pilot outcome for A, a genuine natural experiment for B — and neither is obviously more rigorous than the other." },
+      { text: 'Both have significant flaws.', correct: false, note: "Both have real, if imperfect, evidence behind them — a small pilot and a natural experiment are meaningfully more than opinion, even though neither is a full controlled study." },
+    ],
+  },
+  {
+    id: 'compare-onboarding-video',
+    tier: 'expert',
+    questionType: 'compare',
+    claim: "Does the company's new onboarding video improve new-hire performance?",
+    argumentA: 'New hires who watched the video say they felt very prepared afterward.',
+    argumentB: 'New-hire performance reviews have been slightly higher this quarter than last, and the video launched this quarter.',
+    prompt: 'Which argument is actually better supported?',
+    options: [
+      { text: 'Argument A is better supported.', correct: false, note: "A confuses feeling prepared with actually performing better — those aren't the same thing, and the argument never bridges that gap." },
+      { text: 'Argument B is better supported.', correct: false, note: "B is a bare correlation over a very short window, with no attempt to rule out other causes — like different managers, different hires, or seasonal factors this quarter." },
+      { text: "They're about equally well supported.", correct: false, note: "Both are weak, but not for the same reason — this isn't a case of two comparably solid arguments, it's a case of two different unaddressed gaps." },
+      { text: 'Both have significant flaws.', correct: true, note: "Neither argument actually measures the video's effect on performance: A measures a feeling, not an outcome, and B has a real correlation but no way to rule out everything else that could explain one quarter's small bump." },
+    ],
+  },
 ];

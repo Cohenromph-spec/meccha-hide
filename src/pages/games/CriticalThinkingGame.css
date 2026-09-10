@@ -28,6 +28,61 @@
   margin-bottom: var(--space-6);
 }
 
+.ct-game__compare {
+  margin-bottom: var(--space-5);
+}
+
+.ct-game__claim {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.ct-game__argument {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--accent-psychology);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.ct-game__argument-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-psychology);
+  margin-bottom: 6px;
+}
+
+.ct-game__argument p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ct-game__prompt {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0 0 var(--space-4);
+}
+
+.ct-game__option-note {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
 .ct-game__options {
   display: flex;
   flex-direction: column;

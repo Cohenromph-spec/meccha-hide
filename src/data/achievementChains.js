@@ -103,26 +103,31 @@ export const achievementChains = [
     id: 'streak-criticalThinking',
     icon: '⚖️',
     label: 'Critical Thinking',
+    // Critical Thinking runs the same 6-tier ladder shape as Human
+    // Behavior (see pickCriticalThinkingTier in lib/games/tierGate.js).
     metric: (p) => p.gameStats.criticalThinking?.bestStreak ?? 0,
     tiers: [
       { threshold: 3, title: 'Sharp Mind', description: 'Reach a 3-streak in Critical Thinking — Medium tier unlocked.', reward: 15 },
-      { threshold: 8, title: 'Keen Reasoner', description: 'Reach an 8-streak in Critical Thinking — Hard tier unlocked.', reward: 30 },
-      { threshold: 15, title: 'Master Analyst', description: 'Reach a 15-streak in Critical Thinking.', reward: 55 },
+      { threshold: 6, title: 'Keen Reasoner', description: 'Reach a 6-streak in Critical Thinking — Hard tier unlocked.', reward: 20 },
+      { threshold: 9, title: 'Assumption Hunter', description: 'Reach a 9-streak in Critical Thinking — Connection tier unlocked.', reward: 30 },
+      { threshold: 14, title: 'Evidence Weigher', description: 'Reach a 14-streak in Critical Thinking — Integration tier unlocked.', reward: 50 },
+      { threshold: 20, title: 'Master Analyst', description: 'Reach a 20-streak in Critical Thinking — Expert tier unlocked.', reward: 80 },
     ],
   },
   {
     id: 'streak-humanBehavior',
     icon: '🗣️',
     label: 'Human Behavior',
-    // Human Behavior runs its own 5-tier ladder (see pickHumanBehaviorTier
+    // Human Behavior runs its own 6-tier ladder (see pickHumanBehaviorTier
     // in lib/games/tierGate.js) instead of the standard 3-tier gate every
     // other game uses — these thresholds mirror it directly.
     metric: (p) => p.gameStats.humanBehavior?.bestStreak ?? 0,
     tiers: [
       { threshold: 3, title: 'People Reader', description: 'Reach a 3-streak in Human Behavior — Medium tier unlocked.', reward: 15 },
-      { threshold: 7, title: 'Deep Listener', description: 'Reach a 7-streak in Human Behavior — Connection tier unlocked.', reward: 25 },
-      { threshold: 12, title: 'Social Savant', description: 'Reach a 12-streak in Human Behavior — Integration tier unlocked.', reward: 45 },
-      { threshold: 18, title: 'Master of Motive', description: 'Reach an 18-streak in Human Behavior — Expert tier unlocked.', reward: 75 },
+      { threshold: 6, title: 'Sharp Read', description: 'Reach a 6-streak in Human Behavior — Hard tier unlocked.', reward: 20 },
+      { threshold: 9, title: 'Deep Listener', description: 'Reach a 9-streak in Human Behavior — Connection tier unlocked.', reward: 30 },
+      { threshold: 14, title: 'Social Savant', description: 'Reach a 14-streak in Human Behavior — Integration tier unlocked.', reward: 50 },
+      { threshold: 20, title: 'Master of Motive', description: 'Reach a 20-streak in Human Behavior — Expert tier unlocked.', reward: 80 },
     ],
   },
   {
