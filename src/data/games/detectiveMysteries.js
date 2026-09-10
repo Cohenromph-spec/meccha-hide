@@ -293,4 +293,230 @@ export const detectiveMysteries = [
     ],
     solution: 'Miguel',
   },
+
+  // ============================================================
+  // DEEPER TIER LADDER — same reasoning-depth redesign as the other
+  // three games. The interaction mechanic doesn't change (still: read
+  // every suspect's fact against every clue, pick who's never
+  // eliminated) — the reasoning gets deeper through content, not a new
+  // mechanic:
+  //
+  // 'connection' — 6 suspects, clues written so at least one requires
+  // reading a suspect's fact closely rather than keyword-matching (e.g.
+  // "badged into the building" vs. "badged into the server room itself"
+  // — surface-similar, logically different).
+  //
+  // 'integration' — 6 suspects, clues built around a timeline: an
+  // explicit time cutoff has to be checked against each suspect's own
+  // stated time, not just a single fact/clue pairing.
+  //
+  // 'expert' — 7 suspects, 5-6 clues, combining compound eliminations
+  // with genuinely plausible-looking suspects (someone who ran *a*
+  // migration, someone who *was* in the approval meeting) that still
+  // resolve to a single unique answer once every clue is checked.
+  //
+  // Same authoring rule as before, checked mechanically: the union of
+  // every eliminated suspect must be everyone except the solution, with
+  // no suspect eliminated twice.
+  // ============================================================
+
+  // ---- CONNECTION: 6 suspects, at least one clue per mystery rewards
+  // reading a suspect's fact closely instead of keyword-matching ----
+  {
+    id: 'server-room-left-unlocked',
+    tier: 'connection',
+    scenario: 'The server room door was found propped open overnight, against policy. Six people had badge access that week.',
+    suspects: [
+      { name: 'Priya', fact: 'Was the last one badged into the server room Thursday night, and left her badge on her desk the whole next morning instead of on her lanyard.' },
+      { name: 'Owen', fact: 'Only ever accesses the server room in the mornings, never after 6pm.' },
+      { name: 'Faye', fact: 'Was badged into the building Thursday night, but her badge logs show she never actually entered the server room itself.' },
+      { name: 'Marcus', fact: 'Was on vacation all week, badge deactivated.' },
+      { name: 'Lena', fact: 'Uses a physical office key for the server room, not a badge — the room has both entry methods.' },
+      { name: 'Theo', fact: 'Badged into the server room Thursday night for a routine check, then badged out twenty minutes later, well before it was found propped open.' },
+    ],
+    clues: [
+      { text: 'Whoever left it open badged in after 6pm that night.', eliminates: 'Owen' },
+      { text: 'They were actually in the building and had active badge access that week.', eliminates: 'Marcus' },
+      { text: 'They badged into the server room itself that night, not just the building.', eliminates: 'Faye' },
+      { text: 'Whoever propped it open used a badge to get in, not a physical key.', eliminates: 'Lena' },
+      { text: 'The room was still propped open well after their badge-out time, not shortly after a quick routine check.', eliminates: 'Theo' },
+    ],
+    solution: 'Priya',
+  },
+  {
+    id: 'meeting-room-projector-bulb',
+    tier: 'connection',
+    scenario: "A conference room's projector bulb burned out after being left running with no signal overnight. Six employees had booked that room this week.",
+    suspects: [
+      { name: 'Dana', fact: 'Had the room booked for a 5pm presentation Thursday, and was the last to leave — her badge shows she left the building at 7:40pm.' },
+      { name: 'Kwame', fact: 'Presented at 10am Thursday, well before the incident, and always powers down the projector via the wall switch out of habit.' },
+      { name: 'Ines', fact: 'Was out sick Thursday, working from home.' },
+      { name: 'Oscar', fact: 'Booked the room Friday morning, after the bulb had already burned out.' },
+      { name: 'Priya', fact: "Never actually used the projector — her Thursday meeting was a phone-only call in that room." },
+      { name: 'Tariq', fact: 'Booked the room Wednesday for a workshop, an unrelated week.' },
+    ],
+    clues: [
+      { text: 'Whoever left it on was in the room on Thursday specifically.', eliminates: 'Tariq' },
+      { text: "It was still working when they used the room — the bulb hadn't burned out yet for their booking.", eliminates: 'Oscar' },
+      { text: 'They actually used the projector screen during their time in the room.', eliminates: 'Priya' },
+      { text: "They didn't power the projector off before leaving.", eliminates: 'Kwame' },
+      { text: 'They were physically in the building that day, not working from home.', eliminates: 'Ines' },
+    ],
+    solution: 'Dana',
+  },
+  {
+    id: 'shared-drive-folder-deleted',
+    tier: 'connection',
+    scenario: 'An important shared folder was accidentally deleted from the team drive Tuesday afternoon. Six people had edit access.',
+    suspects: [
+      { name: 'Marisol', fact: "Was reorganizing folders that exact afternoon, cleaning up an old project structure, and admits she was \"moving a lot of things around\" right before the folder vanished." },
+      { name: 'Deon', fact: "Only has view access to that drive, not edit — he can't delete anything there." },
+      { name: 'Wren', fact: 'Was in back-to-back meetings all Tuesday afternoon, verified by her calendar, with no drive activity logged.' },
+      { name: 'Alistair', fact: 'Was at a client site Tuesday afternoon, offsite the entire time — his badge shows no return to the office until Wednesday morning.' },
+      { name: 'Priti', fact: 'Last touched that shared drive the previous Friday, nothing since.' },
+      { name: 'Cole', fact: 'Was actively editing a completely different folder on a different drive all Tuesday afternoon.' },
+    ],
+    clues: [
+      { text: 'Whoever deleted it had edit access to that drive.', eliminates: 'Deon' },
+      { text: 'It happened Tuesday afternoon — they were active on the drive at that time.', eliminates: ['Wren', 'Priti'] },
+      { text: 'They were working within this specific drive that afternoon, not a different one.', eliminates: 'Cole' },
+      { text: 'They were on the office network that afternoon, not offsite.', eliminates: 'Alistair' },
+    ],
+    solution: 'Marisol',
+  },
+
+  // ---- INTEGRATION: 6 suspects, clues built around comparing every
+  // suspect's own stated time against an explicit cutoff ----
+  {
+    id: 'office-plant-knocked-over',
+    tier: 'integration',
+    scenario: 'The large plant by the office entrance was knocked over and the pot cracked sometime Wednesday morning. Six employees were in and out of the entrance that morning.',
+    suspects: [
+      { name: 'Yusuf', fact: 'Arrived at 7:45am, first in, went straight to his desk and stayed there until 10am.' },
+      { name: 'Camille', fact: 'Arrived at 8:50am, walked past the entrance carrying a large stack of boxes for a delivery.' },
+      { name: 'Diego', fact: 'Arrived at 8:15am, came in through the back entrance, never near the front.' },
+      { name: 'Priya', fact: 'Arrived at 9:30am, walked in through the front entrance normally, empty-handed.' },
+      { name: 'Beatrix', fact: 'Arrived at 8:05am, but went directly into a phone booth for a call until 9am, away from the entrance the whole time.' },
+      { name: 'Marco', fact: 'Arrived at 9:10am, propped the front door open for a delivery.' },
+    ],
+    clues: [
+      { text: 'Whoever did it arrived before 9:00am — it happened before the delivery rush started.', eliminates: ['Priya', 'Marco'] },
+      { text: 'They were near the front entrance at some point that morning, not the back.', eliminates: 'Diego' },
+      { text: 'They weren\'t tied up on a phone call away from the entrance the whole relevant window.', eliminates: 'Beatrix' },
+      { text: "They didn't stay at their desk the entire morning.", eliminates: 'Yusuf' },
+    ],
+    solution: 'Camille',
+  },
+  {
+    id: 'conference-line-left-open',
+    tier: 'integration',
+    scenario: 'A conference call was accidentally left connected for two extra hours after the meeting ended at 2pm, racking up charges. Six people had dialed into that call.',
+    suspects: [
+      { name: 'Hana', fact: 'Dialed in at 1:55pm from her desk phone, and her desk phone log shows the line was still connected when she finally hung up at 4:00pm.' },
+      { name: 'Oren', fact: 'Dialed in at 2:00pm sharp from his cell, and hung up the moment the meeting ended — his call log confirms a 2:00–2:01pm call.' },
+      { name: 'Bianca', fact: "Joined at 1:50pm but her connection dropped at 2:10pm due to a dead cell battery, confirmed by her carrier." },
+      { name: 'Felix', fact: 'Was traveling that day and never actually dialed into this particular call.' },
+      { name: 'Priya', fact: 'Joined at 1:58pm from a conference room phone, and left the room at 2:05pm, but never actually hung up the receiver — just walked out.' },
+      { name: 'Tomas', fact: 'Joined right at 2pm and hung up within two minutes, same as Oren, confirmed by his own phone log.' },
+    ],
+    clues: [
+      { text: 'Whoever left it connected was actually on the call that day.', eliminates: 'Felix' },
+      { text: 'Their line was still connected well after 2:05pm.', eliminates: ['Oren', 'Tomas'] },
+      { text: "Their own device logged the disconnect — this one wasn't a dropped signal.", eliminates: 'Bianca' },
+      { text: 'The extra connected time was traced to a desk phone line, not a conference room line.', eliminates: 'Priya' },
+    ],
+    solution: 'Hana',
+  },
+  {
+    id: 'delivery-signed-for-twice',
+    tier: 'integration',
+    scenario: "A package delivery was signed for at the front desk at 11:15am — but the same package had already been signed for and picked up by someone at 10:40am, meaning the 11:15am \"delivery\" was actually a scam re-delivery attempt that got waved through. Six people were near the front desk between 10:30 and 11:30am.",
+    suspects: [
+      { name: 'Greta', fact: 'Was at the front desk from 10:30 to 10:50am covering for the regular receptionist, then went to lunch until 11:40am.' },
+      { name: 'Idris', fact: 'Arrived at the front desk at 11:10am to cover it, and was the one who signed for the 11:15am delivery.' },
+      { name: 'Sana', fact: 'Was on a call in her office the entire window, 10:30 to 11:30am, per her call log.' },
+      { name: 'Rohan', fact: 'Covered the desk from 10:50 to 11:10am, handed it off to Idris right at 11:10am, then left the building.' },
+      { name: 'Miki', fact: 'Signed for and picked up the first, legitimate delivery at 10:40am, then went back to her desk.' },
+      { name: 'Wendell', fact: 'Was out of the building the entire morning at an offsite meeting.' },
+    ],
+    clues: [
+      { text: 'Whoever waved through the second, fake delivery was covering the front desk at 11:15am specifically.', eliminates: ['Greta', 'Rohan'] },
+      { text: 'They were physically in the building that morning.', eliminates: 'Wendell' },
+      { text: "They weren't the one tied up on a call the whole window, away from the desk.", eliminates: 'Sana' },
+      { text: 'This is about who accepted the second delivery — not who received the first, legitimate one.', eliminates: 'Miki' },
+    ],
+    solution: 'Idris',
+  },
+
+  // ---- EXPERT: 7 suspects, 5-6 clues, several genuinely plausible-
+  // looking suspects (someone who ran *a* migration, someone who *was*
+  // in the approval meeting) that only resolve once every clue is
+  // checked against every fact ----
+  {
+    id: 'server-migration-broke-prod',
+    tier: 'expert',
+    scenario: 'A production database migration was run without the required approval, breaking the checkout flow for two hours Tuesday afternoon. Seven engineers had deploy access that day.',
+    suspects: [
+      { name: 'Naledi', fact: 'Deployed a completely unrelated frontend fix at 1:30pm Tuesday, confirmed by the deploy log — no database changes.' },
+      { name: 'Quinn', fact: 'Ran a migration script at 2:45pm Tuesday, but it was the separately approved billing migration, not the checkout one — the approval ticket for that one is on file.' },
+      { name: 'Baz', fact: 'Was out sick Tuesday, no laptop access at all that day.' },
+      { name: 'Ilana', fact: 'Ran the checkout database migration at 2:50pm Tuesday — her name is on the deploy log — but says she thought approval had come through in a Slack message the night before.' },
+      { name: 'Devon', fact: 'Only has read access to the production database, not deploy access — a permissions error blocks any deploy attempt.' },
+      { name: 'Priti', fact: 'Was in the approval meeting for the checkout migration Tuesday morning, and voted to delay it until Wednesday.' },
+      { name: 'Colm', fact: "Deployed the checkout migration's rollback at 4:50pm Tuesday, restoring service — the fix, not the break." },
+    ],
+    clues: [
+      { text: 'Whoever broke it ran the checkout migration specifically, not a different one.', eliminates: ['Naledi', 'Quinn'] },
+      { text: 'They were actually working that day, not out sick.', eliminates: 'Baz' },
+      { text: 'They had deploy access, not just read access.', eliminates: 'Devon' },
+      { text: 'Their deploy happened at the start of the outage, not the moment it was fixed.', eliminates: 'Colm' },
+      { text: 'They personally executed a deploy that day — this is not about who sat in on the approval meeting.', eliminates: 'Priti' },
+    ],
+    solution: 'Ilana',
+  },
+  {
+    id: 'influencer-post-leaked-early',
+    tier: 'expert',
+    scenario: 'A sponsored social post was accidentally published six hours before its scheduled embargo time, breaking a partner agreement. Seven team members had access to the scheduling tool that week.',
+    suspects: [
+      { name: 'Sable', fact: "Edited the post's caption Monday morning, two days before the scheduled time — well before the embargo mattered." },
+      { name: 'Junot', fact: 'Has scheduling-tool access but was on parental leave the entire week, account inactive.' },
+      { name: 'Reyna', fact: "Opened the post in the scheduling tool at the exact minute it went live, and admits she clicked \"Publish Now\" instead of \"Save Draft\" — the two buttons sit right next to each other in the tool." },
+      { name: 'Tobias', fact: "Reviewed the post for legal compliance Tuesday and left comments, but the tool's review mode has no publish button at all." },
+      { name: 'Camae', fact: 'Rescheduled a completely different, unrelated post that same morning — different post ID, different campaign.' },
+      { name: 'Yui', fact: 'Was the one who originally set the embargo time correctly three weeks ago, and had not opened that post since.' },
+      { name: 'Priom', fact: "Was testing the scheduling tool's new interface in a sandbox environment that morning — changes there don't touch real, live posts." },
+    ],
+    clues: [
+      { text: 'Whoever published it early was active in the tool at the exact time it went live.', eliminates: ['Junot', 'Yui'] },
+      { text: "They were working in the live tool, not a testing sandbox that doesn't touch real posts.", eliminates: 'Priom' },
+      { text: 'They were editing or acting on this specific post, not a different one.', eliminates: 'Camae' },
+      { text: "The early publish came from clicking something in the tool's interface, not from a caption edit made two days earlier that had no effect on scheduling.", eliminates: 'Sable' },
+      { text: 'They only had review and comment access, not the ability to actually publish anything themselves.', eliminates: 'Tobias' },
+    ],
+    solution: 'Reyna',
+  },
+  {
+    id: 'wrong-invoice-sent-to-client',
+    tier: 'expert',
+    scenario: "A client was accidentally emailed another client's confidential invoice — caught only when the client called to ask about charges that weren't theirs. Seven people had access to the invoicing system that week.",
+    suspects: [
+      { name: 'Farid', fact: 'Generated an invoice PDF for that other client (the one whose invoice leaked) on Monday, for his own recordkeeping — never sent anything by email.' },
+      { name: 'Otilia', fact: 'Sent an email to the affected client Wednesday afternoon with an attachment — but it was a scheduling email with a calendar invite, not an invoice.' },
+      { name: 'Beck', fact: 'Sent the mix-up email Wednesday afternoon, and admits he had two client folders open side-by-side and grabbed the wrong PDF attachment.' },
+      { name: 'Ngozi', fact: 'Has invoicing system access but was on a plane, fully offline, all day Wednesday.' },
+      { name: 'Priya', fact: "Sent the correct invoice to the affected client the following day, Thursday, to fix the mistake." },
+      { name: 'Hollis', fact: 'Only has permission to view invoices in the system, not to attach or send them by email.' },
+      { name: 'Delphine', fact: "Was the one who originally uploaded the other client's invoice into the system weeks ago — routine, unrelated to this week's mix-up." },
+    ],
+    clues: [
+      { text: 'Whoever sent the mix-up email actually sent something, not just generated a file for their own use.', eliminates: 'Farid' },
+      { text: 'It was an invoice attachment, not a calendar invite.', eliminates: 'Otilia' },
+      { text: 'They were actually online and working Wednesday, not on a plane.', eliminates: 'Ngozi' },
+      { text: "They sent the wrong invoice that day, not the corrected one, and not the day after.", eliminates: 'Priya' },
+      { text: 'They had permission to attach and send invoices by email, not just view them.', eliminates: 'Hollis' },
+      { text: 'This is about who sent the email this week, not who originally uploaded that invoice weeks ago.', eliminates: 'Delphine' },
+    ],
+    solution: 'Beck',
+  },
 ];

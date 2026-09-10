@@ -40,3 +40,6 @@ export const pickHumanBehaviorTier = makeDeepTierPicker();
 
 /** Critical Thinking's 6-tier ladder — same shape, own function. */
 export const pickCriticalThinkingTier = makeDeepTierPicker();
+
+/** Detective's 6-tier ladder — same shape, own function. */
+export const pickDetectiveTier = makeDeepTierPicker();

@@ -1,16 +1,25 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { detectiveMysteries } from '../../data/games/detectiveMysteries.js';
 import { createScenarioDeck, shuffleOptions } from '../../lib/games/scenarioPicker.js';
-import { pickTier } from '../../lib/games/tierGate.js';
+import { pickDetectiveTier } from '../../lib/games/tierGate.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import GameHeader from '../../components/games/GameHeader.jsx';
 import GameSummary from '../../components/games/GameSummary.jsx';
 import TierBadge from '../../components/games/TierBadge.jsx';
 import './DetectiveGame.css';
 
-const EASY = detectiveMysteries.filter((m) => m.tier === 'easy');
-const MEDIUM = detectiveMysteries.filter((m) => m.tier === 'medium');
-const HARD = detectiveMysteries.filter((m) => m.tier === 'hard');
+// One shuffle-bag per tier — a growing/shrinking eligible pool (as streak
+// rises) doesn't work with a single deck across all mysteries, since a
+// higher tier shouldn't surface at all until the streak earns it. Built
+// once at module scope (not per-mount) the same way Human Behavior's are.
+const DECKS_BY_TIER = {
+  easy: createScenarioDeck(detectiveMysteries.filter((m) => m.tier === 'easy')),
+  medium: createScenarioDeck(detectiveMysteries.filter((m) => m.tier === 'medium')),
+  hard: createScenarioDeck(detectiveMysteries.filter((m) => m.tier === 'hard')),
+  connection: createScenarioDeck(detectiveMysteries.filter((m) => m.tier === 'connection')),
+  integration: createScenarioDeck(detectiveMysteries.filter((m) => m.tier === 'integration')),
+  expert: createScenarioDeck(detectiveMysteries.filter((m) => m.tier === 'expert')),
+};
 
 /** Which clue (if any) eliminates this suspect — `eliminates` may be one name or several. */
 function eliminatingClue(mystery, name) {
@@ -19,18 +28,10 @@ function eliminatingClue(mystery, name) {
 
 export default function DetectiveGame() {
   const { streak, bestStreak, totalCorrect, totalPlayed, submitAnswer } = useGameSession('detective');
-  // One shuffle-bag per tier — a growing/shrinking eligible pool (as streak
-  // rises) doesn't work with a single deck across all mysteries, since
-  // medium/hard shouldn't surface at all until the streak earns them.
-  const decksRef = useRef({
-    easy: createScenarioDeck(EASY),
-    medium: createScenarioDeck(MEDIUM),
-    hard: createScenarioDeck(HARD),
-  });
 
   function newRound(currentStreak) {
-    const tier = pickTier(currentStreak);
-    const mystery = decksRef.current[tier]();
+    const tier = pickDetectiveTier(currentStreak);
+    const mystery = DECKS_BY_TIER[tier]();
     return { mystery, suspects: shuffleOptions(mystery.suspects) };
   }
 
