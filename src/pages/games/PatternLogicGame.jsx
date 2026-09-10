@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { generatePuzzle } from '../../lib/games/patternLogic.js';
+import { generatePuzzle, parseCombo } from '../../lib/games/patternLogic.js';
 import { useGameSession } from '../../hooks/useGameSession.js';
 import ShapeIcon from '../../components/games/ShapeIcon.jsx';
 import GameHeader from '../../components/games/GameHeader.jsx';
@@ -8,11 +8,32 @@ import './PatternLogicGame.css';
 
 const AUTO_ADVANCE_MS = 2200;
 
+// 'shape-dual' tiles (Connection tier) carry two independent, simultaneously
+// changing properties (shape + rotation) instead of one — sequence items
+// are already {shape, rotation} objects, but option values are comboKey
+// strings ("circle|90"), so they're parsed back into the same shape here.
+function TileContent({ value, kind }) {
+  if (kind === 'shape') return <ShapeIcon type={value} />;
+  if (kind === 'shape-dual') {
+    const combo = typeof value === 'string' ? parseCombo(value) : value;
+    return (
+      <span style={{ display: 'inline-flex', transform: `rotate(${combo.rotation}deg)` }}>
+        <ShapeIcon type={combo.shape} />
+      </span>
+    );
+  }
+  return value;
+}
+
 function Tile({ value, kind, placeholder }) {
   if (placeholder) {
     return <div className="pattern-tile pattern-tile--placeholder">?</div>;
   }
-  return <div className="pattern-tile">{kind === 'shape' ? <ShapeIcon type={value} /> : value}</div>;
+  return (
+    <div className="pattern-tile">
+      <TileContent value={value} kind={kind} />
+    </div>
+  );
 }
 
 export default function PatternLogicGame() {
@@ -83,7 +104,7 @@ export default function PatternLogicGame() {
               onClick={() => handlePick(option)}
               disabled={picked !== null}
             >
-              {puzzle.kind === 'shape' ? <ShapeIcon type={option} /> : option}
+              <TileContent value={option} kind={puzzle.kind} />
             </button>
           );
         })}

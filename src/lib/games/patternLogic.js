@@ -176,20 +176,200 @@ function shapePairs(rng = Math.random) {
   };
 }
 
+// ============================================================
+// DEEPER TIER LADDER — same reasoning-depth redesign as Human Behavior
+// and Critical Thinking, applied to Pattern Logic's own vocabulary
+// (dimensions/rules interacting, not "harder arithmetic"). Every
+// generator below is checked, before ever offering it as an answer, for
+// the exact failure mode that already burned this file once — a
+// "disguised constant" that happens to give the right answer only by
+// coincidence of how the loop was written. Each new generator states its
+// rule in closed form and is spot-checked against hand worked examples,
+// not just checked for internal consistency.
+//
+// 'connection' — two independent dimensions changing on their own
+// periods at once (shape identity + rotation), so reading only one
+// dimension isn't enough; you have to track both counters together.
+//
+// 'integration' — the RATE of change itself changes at a steady rate
+// (second-order arithmetic — each step is bigger than the last by a
+// fixed amount), a genuinely different structure from "add the same
+// number every time."
+//
+// 'expert' — two fully independent arithmetic sequences interleaved
+// into one visible sequence (even positions belong to one, odd
+// positions to the other) — the "hidden structure" case from Cohen's
+// spec, where the real pattern only appears once you separate the
+// sequence into its two hidden halves.
+// ============================================================
+
+const ROTATIONS = [0, 90, 180, 270];
+
+function comboKey(shape, rotation) {
+  return `${shape}|${rotation}`;
+}
+function parseCombo(key) {
+  const [shape, rotation] = key.split('|');
+  return { shape, rotation: Number(rotation) };
+}
+
+/**
+ * Connection: shape identity cycles on a period-2 pattern while rotation
+ * independently cycles on a period-3 pattern — the combined period is 6
+ * (LCM), so a 4-tile window (the easy/medium/hard default) genuinely
+ * isn't enough to see both cycles resolve; this generator shows 5 tiles
+ * instead specifically so the second, independent cycle is inferable
+ * rather than a guess.
+ */
+function shapeRotationDual(rng = Math.random) {
+  const shapes = shuffle(SHAPES, rng).slice(0, 2);
+  const rotStart = randInt(0, 2, rng);
+  const rotCycle = shuffle(ROTATIONS, rng).slice(0, 3);
+  const seqLen = 5;
+  const comboAt = (i) => ({ shape: shapes[i % 2], rotation: rotCycle[(i + rotStart) % 3] });
+  const seq = Array.from({ length: seqLen }, (_, i) => comboAt(i));
+  const answerCombo = comboAt(seqLen);
+  const answer = comboKey(answerCombo.shape, answerCombo.rotation);
+
+  // Distractors: right shape/wrong rotation, wrong shape/right rotation,
+  // and a fully-independent wrong combo — each isolates whether the
+  // player is actually tracking both cycles or just one.
+  const wrongRotation = rotCycle.find((r) => r !== answerCombo.rotation);
+  const wrongShape = shapes.find((s) => s !== answerCombo.shape);
+  const otherShape = SHAPES.find((s) => !shapes.includes(s));
+  const otherRotation = ROTATIONS.find((r) => !rotCycle.includes(r)) ?? rotCycle[(rotStart + 1) % 3];
+  const options = shuffle(
+    [
+      answer,
+      comboKey(answerCombo.shape, wrongRotation),
+      comboKey(wrongShape, answerCombo.rotation),
+      comboKey(otherShape ?? wrongShape, otherRotation),
+    ],
+    rng
+  );
+
+  return {
+    kind: 'shape-dual',
+    sequence: seq,
+    answer,
+    options,
+    explanation: `The shape alternates every step, and the rotation cycles through ${rotCycle.join('°, ')}° on its own — two independent cycles running at once.`,
+  };
+}
+
+/**
+ * Integration: second-order arithmetic — the step size itself grows by a
+ * fixed amount each term, instead of staying constant (plain arithmetic)
+ * or multiplying (geometric). The rate of change is itself changing at a
+ * steady rate: a genuinely different structure, not just bigger numbers.
+ */
+function accelerating(rng = Math.random) {
+  const start = randInt(1, 10, rng);
+  const initialStep = randInt(2, 6, rng);
+  const stepGrowth = randInt(2, 4, rng);
+  const seq = [start];
+  let step = initialStep;
+  for (let i = 0; i < 3; i += 1) {
+    seq.push(seq[seq.length - 1] + step);
+    step += stepGrowth;
+  }
+  const answer = seq[seq.length - 1] + step;
+  return {
+    kind: 'number',
+    sequence: seq,
+    answer,
+    options: toOptions(answer, initialStep + stepGrowth * 2, rng),
+    explanation: `Each step is ${stepGrowth} bigger than the step before it — the gaps grow by ${stepGrowth} every time, not just the numbers.`,
+  };
+}
+
+/**
+ * Expert: two independent arithmetic sequences interleaved — even
+ * positions (0, 2, 4, ...) belong to sequence A, odd positions (1, 3, 5,
+ * ...) belong to sequence B. Shows 6 visible tiles (enough for 3 terms of
+ * each hidden sequence) and asks for position 6, which belongs to A.
+ * Explicitly regenerates if A and B would collapse into what looks like
+ * one ordinary sequence — the exact "looks solvable one way, is actually
+ * solvable a different way" trap this file has been burned by before.
+ */
+function interleaved(rng = Math.random) {
+  let a0, dA, b0, dB, seq;
+  let attempts = 0;
+  do {
+    a0 = randInt(1, 12, rng);
+    dA = randInt(2, 7, rng);
+    b0 = randInt(1, 12, rng);
+    dB = randInt(2, 7, rng);
+    seq = [0, 1, 2, 3, 4, 5].map((i) => (i % 2 === 0 ? a0 + (i / 2) * dA : b0 + ((i - 1) / 2) * dB));
+    attempts += 1;
+    // Reject if the visible sequence's own consecutive differences are
+    // constant — that would mean the "hidden" structure is indistinguishable
+    // from one plain arithmetic sequence, defeating the point of this tier.
+    const diffs = seq.slice(1).map((v, i) => v - seq[i]);
+    var looksLikeOneSequence = diffs.every((d) => d === diffs[0]);
+  } while (looksLikeOneSequence && attempts < 20);
+
+  const answer = a0 + 3 * dA; // position 6 is even -> continues sequence A (3rd step from a0)
+  const wrongContinueB = b0 + 3 * dB; // mistaking B's continuation for the answer
+  const overallStep = seq[5] - seq[4];
+  const wrongFlatContinue = seq[5] + overallStep; // treating the whole thing as one simple sequence
+  const distractorPool = new Set([answer, wrongContinueB, wrongFlatContinue]);
+  let extra = answer + dA + 1;
+  while (distractorPool.size < 4) {
+    if (!distractorPool.has(extra)) distractorPool.add(extra);
+    extra += 1;
+  }
+  const options = shuffle([...distractorPool].slice(0, 4), rng);
+  if (!options.includes(answer)) options[randInt(0, 3, rng)] = answer;
+
+  return {
+    kind: 'number',
+    sequence: seq,
+    answer,
+    options,
+    explanation: `This is two sequences woven together: the 1st, 3rd, 5th, 7th terms (positions 0, 2, 4, 6) go up by ${dA} each time starting at ${a0}, and the 2nd, 4th, 6th terms go up by ${dB} each time starting at ${b0}, completely independently. Position 6 continues the first sequence: ${a0} → ${a0 + dA} → ${a0 + 2 * dA} → ${answer}.`,
+  };
+}
+
 // Exported individually (in addition to generatePuzzle) so each generator's
 // math can be verified directly against its stated rule, not just checked
 // for internal consistency (answer present among options) — that weaker
 // check previously let a wrong-answer bug in `alternating` ship undetected.
-export { arithmetic, geometric, alternating, fibonacciLike, squares, shapeCycle, shapePairs };
+export {
+  arithmetic,
+  geometric,
+  alternating,
+  fibonacciLike,
+  squares,
+  shapeCycle,
+  shapePairs,
+  shapeRotationDual,
+  accelerating,
+  interleaved,
+  comboKey,
+  parseCombo,
+};
 
 const EASY = [arithmetic, shapeCycle];
 const MEDIUM = [geometric, alternating, shapePairs];
 const HARD = [fibonacciLike, squares];
+const CONNECTION = [shapeRotationDual];
+const INTEGRATION = [accelerating];
+const EXPERT = [interleaved];
 
-/** Difficulty rises with streak — easy generators dominate early, harder ones mix in later. */
+/**
+ * Difficulty rises with streak — easy generators dominate early, harder
+ * ones mix in later. Thresholds match the 6-tier ladder used by Human
+ * Behavior and Critical Thinking (see lib/games/tierGate.js) for
+ * consistency across the Arcade, even though Pattern Logic's pools are
+ * generator functions rather than a fixed scenario bank.
+ */
 export function generatePuzzle(streak = 0, rng = Math.random) {
   let pool = EASY;
-  if (streak >= 8) pool = [...EASY, ...MEDIUM, ...HARD];
+  if (streak >= 20) pool = [...EASY, ...MEDIUM, ...HARD, ...CONNECTION, ...INTEGRATION, ...EXPERT];
+  else if (streak >= 14) pool = [...EASY, ...MEDIUM, ...HARD, ...CONNECTION, ...INTEGRATION];
+  else if (streak >= 9) pool = [...EASY, ...MEDIUM, ...HARD, ...CONNECTION];
+  else if (streak >= 6) pool = [...EASY, ...MEDIUM, ...HARD];
   else if (streak >= 3) pool = [...EASY, ...MEDIUM];
 
   const generator = pool[randInt(0, pool.length - 1, rng)];
