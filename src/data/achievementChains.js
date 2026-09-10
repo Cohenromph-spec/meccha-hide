@@ -134,11 +134,15 @@ export const achievementChains = [
     id: 'streak-detective',
     icon: '🔍',
     label: 'Detective',
+    // Detective runs the same 6-tier ladder shape as the other three
+    // games (see pickDetectiveTier in lib/games/tierGate.js).
     metric: (p) => p.gameStats.detective?.bestStreak ?? 0,
     tiers: [
       { threshold: 3, title: 'Case Closed', description: 'Reach a 3-streak in Detective — Medium tier unlocked.', reward: 15 },
-      { threshold: 8, title: 'Sharp Eye', description: 'Reach an 8-streak in Detective — Hard tier unlocked.', reward: 30 },
-      { threshold: 15, title: 'Master Detective', description: 'Reach a 15-streak in Detective.', reward: 55 },
+      { threshold: 6, title: 'Sharp Eye', description: 'Reach a 6-streak in Detective — Hard tier unlocked.', reward: 20 },
+      { threshold: 9, title: 'Close Reader', description: 'Reach a 9-streak in Detective — Connection tier unlocked.', reward: 30 },
+      { threshold: 14, title: 'Timeline Tracker', description: 'Reach a 14-streak in Detective — Integration tier unlocked.', reward: 50 },
+      { threshold: 20, title: 'Master Detective', description: 'Reach a 20-streak in Detective — Expert tier unlocked.', reward: 80 },
     ],
   },
   {
